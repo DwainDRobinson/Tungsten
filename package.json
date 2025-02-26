@@ -4,9 +4,13 @@
   "description": "The monolithic repository for Puzzle Perks and all the services that supports the CRM and the Puzzle Perks Mobile Application.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "refresh": "rm -rf node_modules/ && npm i && npm dedupe",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {}
 }
