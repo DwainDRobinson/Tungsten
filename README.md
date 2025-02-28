@@ -23,7 +23,6 @@ The monolithic repository for Puzzle Perks and all the services that supports th
 ### Content Management:
 
 - Vidoes
-- Songs
 - Images
 - Documents
 
