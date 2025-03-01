@@ -29,7 +29,7 @@ const initializeDBConnection = () => {
 const startServer = () => {
   const { PORT, HOST } = config;
   try {
-    server.listen(3000, '0.0.0.0');
+    server.listen(PORT, HOST);
     logger.info(`Server listening on port: ${PORT}`);
   } catch (err) {
     logger.error(`Server started with error: ${err}`);
@@ -58,8 +58,7 @@ process
   })
   .on('uncaughtException', err => {
     console.error(
-      getCurrentUTCTimestampFormatted() + ' uncaughtException:',
-      err.message
+      `${getCurrentUTCTimestampFormatted()} uncaughtException: ${err.message}`
     );
     logger.error(`Uncaught exception thrown: ${err.message}`);
     logger.info(
