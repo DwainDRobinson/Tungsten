@@ -6,7 +6,7 @@ import models from '../models';
 exports.getLogins = async userId => {
   try {
     const { Login } = models;
-    const logins = await Login.find({ userId }).sort({ loginTime: -1 });
+    const logins = await Login.find({ userId }).sort({ lastLoggedIn: -1 });
     if (logins) {
       return [null, logins];
     }
@@ -18,19 +18,19 @@ exports.getLogins = async userId => {
   }
 };
 
-exports.updateLastLogin = async (userId, ipAddress, userAgent) => {
+exports.updateLastLogin = async body => {
   try {
     const { Login } = models;
-    const login = new Login({
-      userId,
-      ipAddress,
-      userAgent
-    });
+    const payload = {
+      ...body,
+      mfaAttemptTime: body.mfaRequired ? new Date() : null
+    };
+    const login = new Login(payload);
     const createdLogin = await login.save();
     return [null, createdLogin];
   } catch (err) {
     console.error(err);
     logger.error(`Error updating login for user data to db: ${err.message}`);
-    return [new Error('Unable to update logins associated with user.')];
+    return [new Error('Unable to update login associated with user.')];
   }
 };

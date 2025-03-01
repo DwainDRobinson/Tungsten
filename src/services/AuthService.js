@@ -5,7 +5,8 @@ import { CodeRepository, LoginRepository, UserRepository } from '../repository';
 import {
   HttpStatusCodes,
   badRequest,
-  internalServerErrorRequest
+  internalServerErrorRequest,
+  unauthorizedRequest
 } from '../response-codes';
 import {
   generateAuthorizationToken,
@@ -16,34 +17,50 @@ import {
 exports.validateLogin = async (email, password, ipAddress, userAgent) => {
   try {
     const [error, user] = await UserRepository.getUserByEmail(email);
-    if (user) {
-      const validPassword = user.getIsValidPassword(password);
-      if (validPassword) {
-        const [error, lastLogin] = await LoginRepository.updateLastLogin(
-          user.userId,
-          ipAddress,
-          userAgent
-        );
-        if (error) {
-          return badRequest(error.message);
-        }
-        const token = generateAuthorizationToken(user);
-        const authenicatedUser = {
-          ...user.toJSON(),
-          lastLoggedIn: lastLogin.lastLoggedIn
-        };
-        return [
-          HttpStatusCodes.OK,
-          {
-            message: 'Successful login',
-            user: authenicatedUser,
-            token
-          }
-        ];
-      }
-      return badRequest('Username and password combination was incorrect.');
+    if (!user) {
+      await LoginRepository.updateLastLogin({
+        email,
+        ipAddress,
+        userAgent,
+        result: 'FAILED',
+        failureReason: error.message
+      });
+      return unauthorizedRequest('Invalid credentials');
     }
-    return badRequest(error.message);
+
+    const validPassword = user.getIsValidPassword(password);
+    if (!validPassword) {
+      await LoginRepository.updateLastLogin({
+        email,
+        userId: user.userId,
+        ipAddress,
+        userAgent,
+        result: 'FAILED',
+        failureReason: 'INCORRECT PASSWORD'
+      });
+      return unauthorizedRequest('Invalid credentials');
+    }
+
+    const [err, lastLogin] = await LoginRepository.updateLastLogin({
+      email,
+      userId: user.userId,
+      ipAddress,
+      userAgent,
+      result: 'SUCCESS'
+    });
+
+    if (!lastLogin) {
+      return badRequest(err.message);
+    }
+    const token = generateAuthorizationToken(user);
+
+    return [
+      HttpStatusCodes.OK,
+      {
+        message: 'Successful login',
+        token
+      }
+    ];
   } catch (err) {
     console.error(err);
     logger.error(`Error logging with credentials: ${err.message}`);

@@ -8,20 +8,49 @@ const { Schema, model } = mongoose;
 //LOGIN SCHEMA
 //  ============================================
 const loginSchema = new Schema({
-  userId: {
+  email: {
     type: Number,
     required: true,
     index: true
+  },
+  userId: {
+    type: Number,
+    index: true
+  },
+  ipAddress: {
+    type: String,
+    required: true
+  },
+  userAgent: {
+    type: String
   },
   lastLoggedIn: {
     type: Date,
     default: Date.now
   },
-  ipAddress: {
+  result: {
+    type: String,
+    enum: ['SUCCESS', 'FAILED'],
+    required: true
+  },
+  failureReason: {
     type: String
   },
-  userAgent: {
-    type: String // Stores device or browser information
+  mfaRequired: {
+    type: Boolean,
+    default: false
+  },
+  mfaMethod: {
+    type: String,
+    enum: ['SMS', 'EMAIL', 'APP'],
+    default: null
+  },
+  mfaVerified: {
+    type: Boolean,
+    default: false
+  },
+  mfaAttemptTime: {
+    type: Date
   }
 });
 
@@ -31,7 +60,7 @@ const loginSchema = new Schema({
 loginSchema.set('autoCreate', !isProductionEnvironment());
 
 /**
- * Set the TTL index for the `loginTime` field to expire.
+ * Set the TTL index for the `lastLoggedIn` field to expire.
  */
 loginSchema.index(
   { lastLoggedIn: 1 },
