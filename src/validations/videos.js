@@ -4,55 +4,6 @@
  * https://github.com/validatorjs/validator.js#validators
  */
 import { body, param, query } from 'express-validator';
-/**
- * title: {
-      type: String,
-      index: true,
-      required: true,
-      unique: true
-    },
-    url: {
-      type: String,
-      required: true
-    },
-    videoKey: {
-      type: String,
-      required: true
-    },
-    thumbnail: {
-      type: String,
-      required: true
-    },
-    thumbnailKey: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      required: true
-    },
-    views: {
-      type: Number,
-      default: 0
-    },
-    author: {
-      type: String
-    },
-    isAvailableForSale: {
-      type: Boolean,
-      default: true
-    },
-    duration: {
-      type: String
-    },
-    status: {
-      type: String,
-      default: 'DRAFT'
-    },
-    tags: {
-      type: [String]
-    }
- */
 
 const videoQueryValidation = [
   query('page')

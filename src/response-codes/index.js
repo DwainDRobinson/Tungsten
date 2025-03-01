@@ -1,6 +1,6 @@
 'use strict';
 
-export const HttpStatusCodes = Object.freeze({
+const HttpStatusCodes = Object.freeze({
   OK: 200,
   CREATED: 201,
   ACCEPTED: 202,
@@ -17,7 +17,7 @@ export const HttpStatusCodes = Object.freeze({
   GATEWAY_TIMEOUT: 504
 });
 
-export const getStatusMessage = statusCode => {
+const getStatusMessage = statusCode => {
   switch (statusCode) {
     case HttpStatusCodes.OK:
       return 'Success';
@@ -48,7 +48,7 @@ export const getStatusMessage = statusCode => {
   }
 };
 
-export const badRequest = message => {
+const badRequest = message => {
   return [
     HttpStatusCodes.BAD_REQUEST,
     {
@@ -62,7 +62,7 @@ export const badRequest = message => {
   ];
 };
 
-export const unauthorizedRequest = message => {
+const unauthorizedRequest = message => {
   return [
     HttpStatusCodes.UNAUTHORIZED,
     {
@@ -76,7 +76,7 @@ export const unauthorizedRequest = message => {
   ];
 };
 
-export const forbiddenRequest = message => {
+const forbiddenRequest = message => {
   return [
     HttpStatusCodes.FORBIDDEN,
     {
@@ -90,7 +90,7 @@ export const forbiddenRequest = message => {
   ];
 };
 
-export const notFoundRequest = message => {
+const notFoundRequest = message => {
   return [
     HttpStatusCodes.NOT_FOUND,
     {
@@ -104,7 +104,7 @@ export const notFoundRequest = message => {
   ];
 };
 
-export const internalServerErrorRequest = message => {
+const internalServerErrorRequest = message => {
   return [
     HttpStatusCodes.INTERNAL_SERVER_ERROR,
     {
@@ -116,4 +116,14 @@ export const internalServerErrorRequest = message => {
       ]
     }
   ];
+};
+
+export {
+  HttpStatusCodes,
+  badRequest,
+  forbiddenRequest,
+  getStatusMessage,
+  internalServerErrorRequest,
+  notFoundRequest,
+  unauthorizedRequest
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-export const convertArgToBoolean = arg => {
+const convertArgToBoolean = arg => {
   switch (arg) {
     case 'true':
     case 'yes':
@@ -21,10 +21,16 @@ export const convertArgToBoolean = arg => {
   }
 };
 
-export const isProductionEnvironment = () => {
+const isProductionEnvironment = () => {
   return process.env.NODE_ENV === 'production';
 };
 
-export const isDevelopmentEnvironment = () => {
+const isDevelopmentEnvironment = () => {
   return process.env.NODE_ENV === 'development';
+};
+
+export {
+  convertArgToBoolean,
+  isDevelopmentEnvironment,
+  isProductionEnvironment
 };

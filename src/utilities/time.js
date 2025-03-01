@@ -2,7 +2,7 @@
 
 import moment from 'moment';
 
-export const fancyTimeFormat = duration => {
+const fancyTimeFormat = duration => {
   // Hours, minutes and seconds
   const hrs = ~~(duration / 3600);
   const mins = ~~((duration % 3600) / 60);
@@ -20,6 +20,8 @@ export const fancyTimeFormat = duration => {
   return ret;
 };
 
-export const getCurrentUTCTimestampFormatted = () => {
+const getCurrentUTCTimestampFormatted = () => {
   return moment().utc().format('YYYY-MM-DD HH:mm:ss');
 };
+
+export { fancyTimeFormat, getCurrentUTCTimestampFormatted };

@@ -10,7 +10,7 @@ const { sign, verify } = jwt;
 const { auth } = config;
 const { JWT_SECRET, TOKEN_EXPIRY } = auth;
 
-export const generateAuthorizationToken = user => {
+const generateAuthorizationToken = user => {
   const { email, fullName, role } = user;
   const expirationTime = moment().add(TOKEN_EXPIRY, 'minutes').valueOf() / 1000;
   try {
@@ -27,7 +27,7 @@ export const generateAuthorizationToken = user => {
   }
 };
 
-export const verifyJWTToken = token => {
+const verifyJWTToken = token => {
   try {
     const decoded = verify(token, JWT_SECRET);
     if (decoded) {
@@ -40,6 +40,8 @@ export const verifyJWTToken = token => {
   }
 };
 
-export const generateOTPCode = () => {
+const generateOTPCode = () => {
   return customAlphabet(CUSTOM_ALPHABET, 6)();
 };
+
+export { generateAuthorizationToken, generateOTPCode, verifyJWTToken };
