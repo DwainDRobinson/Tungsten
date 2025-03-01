@@ -153,12 +153,12 @@ exports.updateVideo = async payload => {
         return badRequest(error.message);
       }
       const isVideoObjectAvailable =
-        await AwsRepository.getIsVideoObjectAvailable(videoKey);
+        await AwsRepository.getIsVideoObjectAvailable(video.videoKey);
       if (isVideoObjectAvailable) {
         AwsRepository.deleteVideoByKey(video.videoKey);
       }
       const isThumnbnailObjectAvailable =
-        await AwsRepository.getIsThumbnailObjectAvailable();
+        await AwsRepository.getIsThumbnailObjectAvailable(video.thumbnailKey);
       if (isThumnbnailObjectAvailable) {
         AwsRepository.deleteThumbnailByKey(video.thumbnailKey);
       }
