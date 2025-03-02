@@ -127,29 +127,35 @@ exports.updateUser = async (userId, payload) => {
     const { User } = models;
     const user = await User.findOne({ userId });
 
-    //Looks to see if new email does not existing in the database or conflicts with the existing email.
-    if (payload.email && payload.email !== user.email) {
-      const existingUser = await getIsEmailInUse(payload.email);
-      if (existingUser) {
-        return [new Error('Unable to change email. Email already in use.')];
+    if (user) {
+      const { email, role } = payload;
+      //Looks to see if new email does not existing in the database or conflicts with the existing email.
+      if (email && email !== user.email) {
+        const existingUser = await getIsEmailInUse(email);
+        if (existingUser) {
+          return [new Error('Unable to change email. Email already in use.')];
+        }
+      }
+
+      if (role) {
+        const isValidRole = RoleRepository.getIsValidRole(role);
+
+        if (!isValidRole) {
+          return [new Error('Role provided does not exist.')];
+        }
+      }
+
+      const filter = { userId };
+      const update = { ...payload };
+      const options = { upsert: true, new: true };
+      const updatedUser = await User.findOneAndUpdate(filter, update, options);
+      if (updatedUser) {
+        return [null, updatedUser];
+      } else {
+        return [new Error('Unable to update user details.')];
       }
     }
-
-    const isValidRole = RoleRepository.getIsValidRole(payload.role);
-
-    if (!isValidRole) {
-      return [new Error('Role provided does not exist.')];
-    }
-
-    const filter = { userId };
-    const update = { ...payload };
-    const options = { upsert: true, new: true };
-    const updatedUser = await User.findOneAndUpdate(filter, update, options);
-    if (updatedUser) {
-      return [null, updatedUser];
-    } else {
-      return [new Error('Unable to update user details.')];
-    }
+    return [new Error('Unable to find user to update.')];
   } catch (err) {
     console.error(err);
     logger.error(

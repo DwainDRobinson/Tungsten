@@ -17,7 +17,7 @@ import {
 exports.validateLogin = async (email, password, ipAddress, userAgent) => {
   try {
     const [error, user] = await UserRepository.getUserByEmail(email);
-    if (!user) {
+    if (error || !user) {
       await LoginRepository.updateLastLogin({
         email,
         ipAddress,
@@ -49,7 +49,7 @@ exports.validateLogin = async (email, password, ipAddress, userAgent) => {
       result: 'SUCCESS'
     });
 
-    if (!lastLogin) {
+    if (err || !lastLogin) {
       return badRequest(err.message);
     }
     const token = generateAuthorizationToken(user);
@@ -111,13 +111,12 @@ exports.verifyOTP = async (email, otpCode) => {
       if (error) {
         return badRequest(error.message);
       }
-      if (user) {
-        const token = generateAuthorizationToken(user);
-        return [
-          HttpStatusCodes.OK,
-          { message: 'Code was verified successfully.', token }
-        ];
-      }
+
+      const token = generateAuthorizationToken(user);
+      return [
+        HttpStatusCodes.OK,
+        { message: 'Code was verified successfully.', token }
+      ];
     }
     return badRequest(error.message);
   } catch (err) {
@@ -144,15 +143,14 @@ exports.changePassword = async (email, token, newPassword) => {
       );
       if (error) {
         return badRequest(error.message);
-      } else if (updatedUser) {
-        CodeRepository.deleteCode(updatedUser.userId);
-        return [
-          HttpStatusCodes.OK,
-          {
-            message: 'Password reset successful.'
-          }
-        ];
       }
+      CodeRepository.deleteCode(updatedUser.userId);
+      return [
+        HttpStatusCodes.OK,
+        {
+          message: 'Password reset successful.'
+        }
+      ];
     }
     return badRequest('Token provided does not match.');
   } catch (err) {
