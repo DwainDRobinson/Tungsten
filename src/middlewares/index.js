@@ -127,11 +127,11 @@ const hasPermissionHandler = requiredPermissions => async (req, res, next) => {
 
     const { permissions } = user;
 
-    const isUserAllowed = requiredPermissions.every(permission =>
+    const doesUserHasPermission = requiredPermissions.every(permission =>
       permissions.includes(permission)
     );
 
-    if (!isUserAllowed) {
+    if (!doesUserHasPermission) {
       const [statusCode, response] = forbiddenRequest(
         'User not authorized to perform action.'
       );

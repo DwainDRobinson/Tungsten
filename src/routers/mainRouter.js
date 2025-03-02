@@ -19,7 +19,7 @@ const router = Router();
 
 router.get('/', (_, res) => {
   res.status(HttpStatusCodes.OK).send({
-    message: `Welcome to ${appName} Service Manager Service!`
+    message: `Welcome to ${appName} Service!`
   });
 });
 
@@ -27,7 +27,7 @@ router.get('/probeCheck', (_, res) => {
   res.status(HttpStatusCodes.OK).send({
     uptime: fancyTimeFormat(process.uptime()),
     date: new Date(),
-    message: `${appName} Service Manager service up and running!`,
+    message: `${appName} service up and running!`,
     version
   });
 });
