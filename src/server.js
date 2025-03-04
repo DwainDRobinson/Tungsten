@@ -15,6 +15,7 @@ import { rateLimitHandler } from './middlewares';
 import {
   authRouter,
   categoryRouter,
+  difficultyRouter,
   loginRouter,
   mainRouter,
   notFoundRouter,
@@ -98,6 +99,9 @@ logger.info('Loaded tag routes middleware.');
 
 server.use(BASE_URL, categoryRouter);
 logger.info('Loaded catgory routes middleware.');
+
+server.use(BASE_URL, difficultyRouter);
+logger.info('Loaded difficulty routes middleware.');
 
 server.use(BASE_URL, videoRouter);
 logger.info('Loaded video routes middleware.');
