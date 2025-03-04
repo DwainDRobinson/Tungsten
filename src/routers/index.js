@@ -1,6 +1,7 @@
 'use strict';
 
 import authRouter from './authRouter';
+import categoryRouter from './categoryRouter';
 import loginRouter from './loginRouter';
 import mainRouter from './mainRouter';
 import notFoundRouter from './notFoundRouter';
@@ -12,6 +13,7 @@ import videoRouter from './videoRouter';
 
 export {
   authRouter,
+  categoryRouter,
   loginRouter,
   mainRouter,
   notFoundRouter,

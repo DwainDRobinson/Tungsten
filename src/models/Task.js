@@ -18,11 +18,6 @@ const taskSchema = new Schema(
       type: String,
       required: true
     },
-    points: {
-      type: Number,
-      required: true,
-      min: 0
-    },
     category: {
       type: String,
       enum: TASK_CATEGORY_ENUM,
@@ -33,6 +28,10 @@ const taskSchema = new Schema(
       required: true,
       index: true
     },
+    tags: {
+      type: [String],
+      required: true
+    },
     difficulty: {
       type: String,
       enum: TASK_DIFFICULTY_ENUM,
@@ -42,13 +41,18 @@ const taskSchema = new Schema(
       type: Boolean,
       default: true
     },
-    expirationDate: {
-      type: Date
+    points: {
+      type: Number,
+      required: true,
+      min: 0
     },
     status: {
       type: String,
       enum: TASK_STATUS_ENUM,
       default: 'Pending'
+    },
+    expirationDate: {
+      type: Date
     },
     completedAt: {
       type: Date

@@ -1,6 +1,7 @@
 'use strict';
 
 import AuthController from './AuthController';
+import CategoryController from './CategoryController';
 import LoginController from './LoginController';
 import PermissionController from './PermissionController';
 import RoleController from './RoleController';
@@ -10,6 +11,7 @@ import VideoController from './VideoController';
 
 export {
   AuthController,
+  CategoryController,
   LoginController,
   PermissionController,
   RoleController,
