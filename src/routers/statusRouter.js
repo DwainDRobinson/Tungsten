@@ -4,11 +4,9 @@ import express from 'express';
 import { StatusController } from '../controllers';
 import {
   hasPermissionHandler,
-  rateLimiter,
   validateAuthorizationTokenHandler,
   validationHandler
 } from '../middlewares';
-import { isProductionEnvironment } from '../utilities/boolean';
 import {
   statusIdParamValidation,
   statusPostValidation,
@@ -18,10 +16,6 @@ import {
 
 const { Router } = express;
 const router = Router();
-
-if (isProductionEnvironment()) {
-  router.use(rateLimiter);
-}
 
 router.get(
   '/getStatuses',
