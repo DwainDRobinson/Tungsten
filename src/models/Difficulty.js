@@ -38,6 +38,6 @@ difficultySchema.plugin(autoIncrement, { inc_field: 'difficultyId' });
 /**
  * Create difficulty model out of difficultySchema
  */
-const difficulty = model('difficulty', difficultySchema);
+const Difficulty = model('Difficulty', difficultySchema);
 
-export default difficulty;
+export default Difficulty;
