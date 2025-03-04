@@ -62,10 +62,4 @@ const STATES = [
   'WY'
 ];
 
-const TASK_CATEGORY_ENUM = ['Daily', 'Weekly', 'One-Time', 'Bonus'];
-
-const TASK_DIFFICULTY_ENUM = ['Easy', 'Medium', 'Hard'];
-
-const TASK_STATUS_ENUM = ['Pending', 'In-progress', 'Completed', 'Expired'];
-
-export { STATES, TASK_CATEGORY_ENUM, TASK_DIFFICULTY_ENUM, TASK_STATUS_ENUM };
+export { STATES };
