@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
-import { TASK_CATEGORY_ENUM, TASK_DIFFICULTY_ENUM } from '../constants';
-import { TASK_STATUS_ENUM } from '../enums';
 import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema, model } = mongoose;
@@ -20,7 +18,6 @@ const taskSchema = new Schema(
     },
     category: {
       type: String,
-      enum: TASK_CATEGORY_ENUM,
       required: true
     },
     assignedTo: {
@@ -28,27 +25,25 @@ const taskSchema = new Schema(
       required: true,
       index: true
     },
+    points: {
+      type: Number,
+      required: true,
+      min: 0
+    },
     tags: {
       type: [String],
       required: true
     },
     difficulty: {
       type: String,
-      enum: TASK_DIFFICULTY_ENUM,
       default: 'Medium'
     },
     isActive: {
       type: Boolean,
       default: true
     },
-    points: {
-      type: Number,
-      required: true,
-      min: 0
-    },
     status: {
       type: String,
-      enum: TASK_STATUS_ENUM,
       default: 'Pending'
     },
     expirationDate: {
