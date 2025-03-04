@@ -29,7 +29,7 @@ exports.getCategories = async query => {
 
 exports.getCategory = async categoryId => {
   try {
-    const category = await CategoryRespository.getCategoryById(categoryId);
+    const category = await CategoryRespository.getCategory(categoryId);
     if (category) {
       return [
         HttpStatusCodes.OK,

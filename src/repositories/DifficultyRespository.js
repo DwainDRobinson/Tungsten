@@ -45,13 +45,13 @@ exports.getCategories = async query => {
   }
 };
 
-exports.getDifficultyById = async difficultyId => {
+exports.getDifficulty = async difficultyId => {
   try {
     const { Difficulty } = models;
     const difficulty = await Difficulty.findOne({ difficultyId });
     return difficulty;
   } catch (err) {
-    logger.error('Error getting catgeory data from db by id: ', err);
+    logger.error('Error getting difficulty data from db by id: ', err);
   }
 };
 
@@ -98,7 +98,7 @@ exports.updateDifficulty = async (difficultyId, payload) => {
   }
 };
 
-exports.deleteDifficultyById = async difficultyId => {
+exports.deleteDifficulty = async difficultyId => {
   try {
     const { Difficulty } = models;
     const deletedDifficulty = await Difficulty.deleteOne({ difficultyId });

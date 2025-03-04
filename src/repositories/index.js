@@ -4,6 +4,7 @@ import CodeRepository from './CodeRepository';
 import LoginRepository from './LoginRepository';
 import PermissionRepository from './PermissionRepository';
 import RoleRepository from './RoleRepository';
+import StatusRespository from './StatusRespository';
 import TagRepository from './TagRepository';
 import UserRepository from './UserRepository';
 import VideoRepository from './VideoRepository';
@@ -15,6 +16,7 @@ export {
   LoginRepository,
   PermissionRepository,
   RoleRepository,
+  StatusRespository,
   TagRepository,
   UserRepository,
   VideoRepository

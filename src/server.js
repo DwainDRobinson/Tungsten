@@ -21,6 +21,7 @@ import {
   notFoundRouter,
   permissionRouter,
   roleRouter,
+  statusRouter,
   tagRouter,
   userRouter,
   videoRouter
@@ -102,6 +103,9 @@ logger.info('Loaded catgory routes middleware.');
 
 server.use(BASE_URL, difficultyRouter);
 logger.info('Loaded difficulty routes middleware.');
+
+server.use(BASE_URL, statusRouter);
+logger.info('Loaded status routes middleware.');
 
 server.use(BASE_URL, videoRouter);
 logger.info('Loaded video routes middleware.');

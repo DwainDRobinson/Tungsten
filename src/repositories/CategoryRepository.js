@@ -43,13 +43,13 @@ exports.getCategories = async query => {
   }
 };
 
-exports.getCategoryById = async categoryId => {
+exports.getCategory = async categoryId => {
   try {
     const { Category } = models;
     const category = await Category.findOne({ categoryId });
     return category;
   } catch (err) {
-    logger.error('Error getting catgeory data from db by id: ', err);
+    logger.error('Error getting category data from db by id: ', err);
   }
 };
 

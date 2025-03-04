@@ -29,9 +29,7 @@ exports.getDifficulties = async query => {
 
 exports.getDifficulty = async difficultyId => {
   try {
-    const difficulty = await DifficultyRespository.getDifficultyById(
-      difficultyId
-    );
+    const difficulty = await DifficultyRespository.getDifficulty(difficultyId);
     if (difficulty) {
       return [
         HttpStatusCodes.OK,
@@ -85,10 +83,10 @@ exports.updateDifficulty = async (difficultyId, payload) => {
   }
 };
 
-exports.deleteDifficultyById = async difficultyId => {
+exports.deleteDifficulty = async difficultyId => {
   try {
     const [error, deletedDifficulty] =
-      await DifficultyRespository.deleteDifficultyById(difficultyId);
+      await DifficultyRespository.deleteDifficulty(difficultyId);
     if (deletedDifficulty) {
       return [HttpStatusCodes.NO_CONTENT];
     }
