@@ -2,7 +2,12 @@
 
 import express from 'express';
 import { StatusController } from '../controllers';
-import { rateLimiter, validationHandler } from '../middlewares';
+import {
+  hasPermissionHandler,
+  rateLimiter,
+  validateAuthorizationTokenHandler,
+  validationHandler
+} from '../middlewares';
 import { isProductionEnvironment } from '../utilities/boolean';
 import {
   statusIdParamValidation,
@@ -20,6 +25,8 @@ if (isProductionEnvironment()) {
 
 router.get(
   '/getStatuses',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   statusQueryValidation,
   validationHandler,
   StatusController.getStatuses
@@ -27,6 +34,8 @@ router.get(
 
 router.get(
   '/getStatus/:statusId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   statusIdParamValidation,
   validationHandler,
   StatusController.getStatus
@@ -34,6 +43,8 @@ router.get(
 
 router.post(
   '/createStatus',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   statusPostValidation,
   validationHandler,
   StatusController.createStatus
@@ -41,6 +52,8 @@ router.post(
 
 router.put(
   '/updateStatus/:statusId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   statusUpdateValidation,
   validationHandler,
   StatusController.updateStatus
@@ -48,6 +61,8 @@ router.put(
 
 router.delete(
   '/deleteStatus/:statusId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   statusIdParamValidation,
   validationHandler,
   StatusController.deleteStatus

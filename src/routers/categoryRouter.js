@@ -2,7 +2,12 @@
 
 import express from 'express';
 import { CategoryController } from '../controllers';
-import { rateLimiter, validationHandler } from '../middlewares';
+import {
+  hasPermissionHandler,
+  rateLimiter,
+  validateAuthorizationTokenHandler,
+  validationHandler
+} from '../middlewares';
 import { isProductionEnvironment } from '../utilities/boolean';
 import {
   categoryIdParamValidation,
@@ -20,6 +25,8 @@ if (isProductionEnvironment()) {
 
 router.get(
   '/getCategories',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   categoryQueryValidation,
   validationHandler,
   CategoryController.getCategories
@@ -27,6 +34,8 @@ router.get(
 
 router.get(
   '/getCategory/:categoryId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   categoryIdParamValidation,
   validationHandler,
   CategoryController.getCategory
@@ -34,6 +43,8 @@ router.get(
 
 router.post(
   '/createCategory',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   categoryPostValidation,
   validationHandler,
   CategoryController.createCategory
@@ -41,6 +52,8 @@ router.post(
 
 router.put(
   '/updateCategory/:categoryId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   categoryUpdateValidation,
   validationHandler,
   CategoryController.updateCategory
@@ -48,6 +61,8 @@ router.put(
 
 router.delete(
   '/deleteCategory/:categoryId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   categoryIdParamValidation,
   validationHandler,
   CategoryController.deleteCategory

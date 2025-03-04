@@ -2,7 +2,12 @@
 
 import express from 'express';
 import { DifficultyController } from '../controllers';
-import { rateLimiter, validationHandler } from '../middlewares';
+import {
+  hasPermissionHandler,
+  rateLimiter,
+  validateAuthorizationTokenHandler,
+  validationHandler
+} from '../middlewares';
 import { isProductionEnvironment } from '../utilities/boolean';
 import {
   difficultyIdParamValidation,
@@ -20,6 +25,8 @@ if (isProductionEnvironment()) {
 
 router.get(
   '/getDifficulties',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   difficultyQueryValidation,
   validationHandler,
   DifficultyController.getDifficulties
@@ -27,6 +34,8 @@ router.get(
 
 router.get(
   '/getDifficulty/:difficultyId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   difficultyIdParamValidation,
   validationHandler,
   DifficultyController.getDifficulty
@@ -34,6 +43,8 @@ router.get(
 
 router.post(
   '/createDifficulty',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   difficultyPostValidation,
   validationHandler,
   DifficultyController.createDifficulty
@@ -41,6 +52,8 @@ router.post(
 
 router.put(
   '/updateDifficulty/:difficultyId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   difficultyUpdateValidation,
   validationHandler,
   DifficultyController.updateDifficulty
@@ -48,6 +61,8 @@ router.put(
 
 router.delete(
   '/deleteDifficulty/:difficultyId',
+  validateAuthorizationTokenHandler,
+  hasPermissionHandler(['SYSTEM_ADMIN']),
   difficultyIdParamValidation,
   validationHandler,
   DifficultyController.deleteDifficulty
