@@ -81,10 +81,11 @@ exports.updateCategory = async (categoryId, payload) => {
   }
 };
 
-exports.deleteCategoryById = async categoryId => {
+exports.deleteCategory = async categoryId => {
   try {
-    const [error, deletedCategory] =
-      await CategoryRespository.deleteCategoryById(categoryId);
+    const [error, deletedCategory] = await CategoryRespository.deleteCategory(
+      categoryId
+    );
     if (deletedCategory) {
       return [HttpStatusCodes.NO_CONTENT];
     }

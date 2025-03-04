@@ -92,7 +92,7 @@ exports.updateCategory = async (categoryId, payload) => {
   }
 };
 
-exports.deleteCategoryById = async categoryId => {
+exports.deleteCategory = async categoryId => {
   try {
     const { Category } = models;
     const deletedCategory = await Category.deleteOne({ categoryId });

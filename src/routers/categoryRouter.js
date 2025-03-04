@@ -50,7 +50,7 @@ router.delete(
   '/deleteCategory/:categoryId',
   categoryIdParamValidation,
   validationHandler,
-  CategoryController.deleteCategoryById
+  CategoryController.deleteCategory
 );
 
 export default router;
