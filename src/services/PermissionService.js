@@ -1,7 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import { PermissionRepository } from '../repository';
+import { PermissionRepository } from '../repositories';
 import {
   badRequest,
   HttpStatusCodes,

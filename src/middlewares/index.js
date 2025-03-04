@@ -3,7 +3,7 @@
 import rateLimit from 'express-rate-limit';
 import config from '../config';
 import logger from '../logger';
-import { UserRepository } from '../repository';
+import { UserRepository } from '../repositories';
 import {
   HttpStatusCodes,
   forbiddenRequest,

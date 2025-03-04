@@ -1,7 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import { AwsRepository, VideoRepository } from '../repository';
+import { AwsRepository, VideoRepository } from '../repositories';
 import {
   badRequest,
   HttpStatusCodes,

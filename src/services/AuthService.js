@@ -1,7 +1,11 @@
 'use strict';
 
 import logger from '../logger';
-import { CodeRepository, LoginRepository, UserRepository } from '../repository';
+import {
+  CodeRepository,
+  LoginRepository,
+  UserRepository
+} from '../repositories';
 import {
   HttpStatusCodes,
   badRequest,

@@ -1,7 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import { RoleRepository } from '../repository';
+import { RoleRepository } from '../repositories';
 import {
   HttpStatusCodes,
   badRequest,

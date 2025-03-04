@@ -1,7 +1,7 @@
 'use strict';
 
 import logger from '../logger';
-import { TagRepository } from '../repository';
+import { TagRepository } from '../repositories';
 import {
   HttpStatusCodes,
   badRequest,
