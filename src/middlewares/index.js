@@ -11,6 +11,7 @@ import {
   internalServerErrorRequest,
   unauthorizedRequest
 } from '../response-codes';
+import { EntitlementService } from '../services';
 import {
   isDevelopmentEnvironment,
   isProductionEnvironment
@@ -128,8 +129,9 @@ const hasPermissionHandler = requiredPermissions => async (req, res, next) => {
 
     const { permissions } = user;
 
-    const doesUserHasPermission = requiredPermissions.every(permission =>
-      permissions.includes(permission)
+    const doesUserHasPermission = EntitlementService.checkPermissions(
+      requiredPermissions,
+      permissions
     );
 
     if (!doesUserHasPermission) {

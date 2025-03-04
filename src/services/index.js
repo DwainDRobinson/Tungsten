@@ -2,6 +2,7 @@
 
 import AuthService from './AuthService';
 import CategoryService from './CategoryService';
+import EntitlementService from './EntitlementService';
 import LoginService from './LoginService';
 import PermissionService from './PermissionService';
 import RoleService from './RoleService';
@@ -13,6 +14,7 @@ import VideoService from './VideoService';
 export {
   AuthService,
   CategoryService,
+  EntitlementService,
   LoginService,
   PermissionService,
   RoleService,
