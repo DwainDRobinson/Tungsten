@@ -18,8 +18,7 @@ const statusSchema = new Schema(
     },
     description: {
       type: String,
-      required: true,
-      index: true
+      required: true
     }
   },
   { timestamps: true }

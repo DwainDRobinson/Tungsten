@@ -43,7 +43,7 @@ const startServer = () => {
 const runApplication = async () => {
   const { APP_NAME } = config;
   logger.info(`Starting ${APP_NAME} app...`);
-  //   initializeDBConnection();
+  initializeDBConnection();
   startServer();
 };
 
