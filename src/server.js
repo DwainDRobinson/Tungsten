@@ -23,6 +23,7 @@ import {
   roleRouter,
   statusRouter,
   tagRouter,
+  taskRouter,
   userRouter,
   videoRouter
 } from './routers';
@@ -106,6 +107,9 @@ logger.info('Loaded difficulty routes middleware.');
 
 server.use(BASE_URL, statusRouter);
 logger.info('Loaded status routes middleware.');
+
+server.use(BASE_URL, taskRouter);
+logger.info('Loaded task routes middleware.');
 
 server.use(BASE_URL, videoRouter);
 logger.info('Loaded video routes middleware.');

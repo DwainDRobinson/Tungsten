@@ -8,6 +8,7 @@ import PermissionController from './PermissionController';
 import RoleController from './RoleController';
 import StatusController from './StatusController';
 import TagController from './TagController';
+import TaskController from './TaskContoller';
 import UserController from './UserContoller';
 import VideoController from './VideoController';
 
@@ -20,6 +21,7 @@ export {
   RoleController,
   StatusController,
   TagController,
+  TaskController,
   UserController,
   VideoController
 };

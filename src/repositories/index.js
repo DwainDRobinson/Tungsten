@@ -6,6 +6,7 @@ import PermissionRepository from './PermissionRepository';
 import RoleRepository from './RoleRepository';
 import StatusRespository from './StatusRespository';
 import TagRepository from './TagRepository';
+import TaskRepository from './TaskRepository';
 import UserRepository from './UserRepository';
 import VideoRepository from './VideoRepository';
 
@@ -18,6 +19,7 @@ export {
   RoleRepository,
   StatusRespository,
   TagRepository,
+  TaskRepository,
   UserRepository,
   VideoRepository
 };

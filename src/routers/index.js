@@ -10,6 +10,7 @@ import permissionRouter from './permissionRouter';
 import roleRouter from './roleRouter';
 import statusRouter from './statusRouter';
 import tagRouter from './tagRouter';
+import taskRouter from './taskRouter';
 import userRouter from './userRouter';
 import videoRouter from './videoRouter';
 
@@ -24,6 +25,7 @@ export {
   roleRouter,
   statusRouter,
   tagRouter,
+  taskRouter,
   userRouter,
   videoRouter
 };
