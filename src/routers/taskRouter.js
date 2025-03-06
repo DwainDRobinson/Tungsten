@@ -20,16 +20,22 @@ const router = Router();
 router.get(
   '/getTasks',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
   taskQueryValidation,
   validationHandler,
   TaskController.getTasks
 );
 
 router.get(
+  '/getTasks/:userId',
+  validateAuthorizationTokenHandler,
+  taskIdParamValidation,
+  validationHandler,
+  TaskController.getTasksByUser
+);
+
+router.get(
   '/getTask/:taskId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
   taskIdParamValidation,
   validationHandler,
   TaskController.getTask
@@ -38,7 +44,6 @@ router.get(
 router.post(
   '/createTask',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
   taskPostValidation,
   validationHandler,
   TaskController.createTask
@@ -47,7 +52,6 @@ router.post(
 router.put(
   '/updateTask/:taskId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
   taskUpdateValidation,
   validationHandler,
   TaskController.updateTask

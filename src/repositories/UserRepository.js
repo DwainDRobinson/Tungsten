@@ -2,6 +2,7 @@
 
 import logger from '../logger';
 import models from '../models';
+import { isObjectEmpty } from '../utilities/objects';
 import RoleRepository from './RoleRepository';
 
 const getIsEmailInUse = async email => {
@@ -19,6 +20,23 @@ const getIsEmailInUse = async email => {
   }
 };
 
+const getHierarchyOfUsers = async userId => {
+  const { User } = models;
+  const users = await User.find({});
+
+  const buildHierarchy = parentId => {
+    return users
+      .filter(user =>
+        user.careGivers.some(
+          careGiver => String(careGiver) === String(parentId)
+        )
+      )
+      .flatMap(user => [user, ...buildHierarchy(user.userId)]);
+  };
+
+  return buildHierarchy(userId);
+};
+
 exports.getUsers = async query => {
   try {
     const { User } = models;
@@ -32,9 +50,11 @@ exports.getUsers = async query => {
 
     // Build filter query
     const search = {};
-    Object.keys(filters).forEach(key => {
-      search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-    });
+    if (!isObjectEmpty(filters)) {
+      Object.keys(filters).forEach(key => {
+        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
+      });
+    }
 
     const options = {
       skip: (page - 1) * limit,
@@ -181,3 +201,5 @@ exports.deleteUser = async userId => {
     return [new Error('Unable to delete user data.')];
   }
 };
+
+export { getHierarchyOfUsers, getIsEmailInUse };

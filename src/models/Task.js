@@ -20,19 +20,23 @@ const taskSchema = new Schema(
       type: String,
       required: true
     },
+    createdBy: {
+      type: Number,
+      required: true,
+      index: true
+    },
     assignedTo: {
       type: Number,
       required: true,
       index: true
     },
+    tags: {
+      type: [String]
+    },
     points: {
       type: Number,
       required: true,
-      min: 0
-    },
-    tags: {
-      type: [String],
-      required: true
+      default: 1
     },
     difficulty: {
       type: String,

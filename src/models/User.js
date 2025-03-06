@@ -24,6 +24,11 @@ const userSchema = new Schema(
     },
     password: { type: String, required: true },
     fullName: { type: String, required: true },
+    role: { type: String, required: true },
+    permissions: {
+      type: [String],
+      required: true
+    },
     dob: { type: String },
     gender: { type: String },
     city: { type: String },
@@ -32,11 +37,11 @@ const userSchema = new Schema(
       enum: STATES
     },
     zipCode: { type: String },
-    role: { type: String, required: true },
-    permissions: {
-      type: [String],
-      required: true
-    }
+    careGivers: {
+      type: [Number],
+      default: []
+    },
+    authorized: {}
   },
   { timestamps: true }
 );

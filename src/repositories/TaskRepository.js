@@ -1,5 +1,6 @@
 'use strict';
 
+import { UserRepository } from '.';
 import logger from '../logger';
 import models from '../models';
 
@@ -39,17 +40,47 @@ exports.getTasks = async query => {
       return [null, result];
     }
   } catch (err) {
-    logger.error('Error getting task data from db: ', err);
+    console.error(err);
+    logger.error(`Error getting task data from db: ${err.message}`);
+    return [new Error('Unable to get video data from db.')];
   }
 };
 
-exports.getTask = async difficultyId => {
+exports.getTask = async taskId => {
   try {
     const { Task } = models;
-    const task = await Task.findOne({ difficultyId });
+    const task = await Task.findOne({ taskId });
     return task;
   } catch (err) {
-    logger.error('Error getting task data from db by id: ', err);
+    console.error(err);
+    logger.error(`Error getting role data from db by id: ${err.message}`);
+    return [new Error('Unable to get video data from db.')];
+  }
+};
+
+exports.getTaskByUser = async userId => {
+  try {
+    const { Task } = models;
+    const task = await Task.findOne({ userId });
+    return task;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting role data from db by userId: ${err.message}`);
+    return [new Error('Unable to get video data from db.')];
+  }
+};
+
+exports.getTasksByUser = async userId => {
+  try {
+    const { Task } = models;
+    const descendantUsers = await UserRepository.getHierarchyOfUsers(userId);
+    const userIds = [userId, ...descendantUsers.map(u => u.userId)];
+    const tasks = await Task.find({ assignedTo: { $in: userIds } });
+    return tasks;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting task data from db by userId: ${err.message}`);
+    return [new Error('Unable to get video data from db.')];
   }
 };
 
@@ -59,7 +90,9 @@ exports.getTaskByName = async name => {
     const task = await Task.findOne({ name });
     return task;
   } catch (err) {
-    logger.error('Error getting task data from db by name: ', err);
+    console.error(err);
+    logger.error(`Error getting task data from db by name: ${err.message}`);
+    return [new Error('Unable to get video data from db.')];
   }
 };
 
@@ -75,7 +108,9 @@ exports.createTask = async payload => {
     const { description, name, difficultyId } = createdTask;
     return [null, { description, name, difficultyId }];
   } catch (err) {
-    logger.error('Error saving task data to db: ', err);
+    console.error(err);
+    logger.error(`Error saving task data to db: ${err.message}`);
+    return [new Error('Unable to get video data from db.')];
   }
 };
 
@@ -88,7 +123,9 @@ exports.updateTask = async (difficultyId, payload) => {
     const task = await Task.findOneAndUpdate(filter, update, options);
     return [null, task];
   } catch (err) {
-    logger.error('Error updating task data to db: ', err);
+    console.error(err);
+    logger.error(`Error updating task data to db by userId: ${err.message}`);
+    return [new Error('Unable to get video data from db.')];
   }
 };
 
@@ -101,6 +138,8 @@ exports.deleteTask = async difficultyId => {
     }
     return [new Error('Unable to find task to delete details.')];
   } catch (err) {
-    logger.error('Error deleting task by id: ', err);
+    console.error(err);
+    logger.error(`Error deleting task data from db by id: ${err.message}`);
+    return [new Error('Unable to get video data from db.')];
   }
 };

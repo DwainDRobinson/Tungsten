@@ -27,6 +27,19 @@ exports.getTask = async (req, res, next) => {
   }
 };
 
+exports.getTasksByUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const [statusCode, response] = await TaskService.getTasksByUser(userId);
+    res.status(statusCode).send(response);
+  } catch (err) {
+    logger.error(
+      `Error with getting task metadata by userId: ${userId}: ${err.message}`
+    );
+    next(err);
+  }
+};
+
 exports.createTask = async (req, res, next) => {
   try {
     const { body } = req;
