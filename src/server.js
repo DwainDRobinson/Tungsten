@@ -24,8 +24,7 @@ import {
   statusRouter,
   tagRouter,
   taskRouter,
-  userRouter,
-  videoRouter
+  userRouter
 } from './routers';
 import { isProductionEnvironment } from './utilities/boolean';
 
@@ -110,9 +109,6 @@ logger.info('Loaded status routes middleware.');
 
 server.use(BASE_URL, taskRouter);
 logger.info('Loaded task routes middleware.');
-
-server.use(BASE_URL, videoRouter);
-logger.info('Loaded video routes middleware.');
 
 server.use(notFoundRouter);
 logger.info('Loaded not found routes middleware.');

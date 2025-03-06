@@ -12,7 +12,6 @@ import statusRouter from './statusRouter';
 import tagRouter from './tagRouter';
 import taskRouter from './taskRouter';
 import userRouter from './userRouter';
-import videoRouter from './videoRouter';
 
 export {
   authRouter,
@@ -26,6 +25,5 @@ export {
   statusRouter,
   tagRouter,
   taskRouter,
-  userRouter,
-  videoRouter
+  userRouter
 };

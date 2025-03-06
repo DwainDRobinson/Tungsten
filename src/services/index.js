@@ -9,7 +9,6 @@ import RoleService from './RoleService';
 import StatusService from './StatusService';
 import TagService from './TagService';
 import UserService from './UserService';
-import VideoService from './VideoService';
 
 export {
   AuthService,
@@ -20,6 +19,5 @@ export {
   RoleService,
   StatusService,
   TagService,
-  UserService,
-  VideoService
+  UserService
 };

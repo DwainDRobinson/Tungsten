@@ -8,7 +8,6 @@ import StatusRespository from './StatusRespository';
 import TagRepository from './TagRepository';
 import TaskRepository from './TaskRepository';
 import UserRepository from './UserRepository';
-import VideoRepository from './VideoRepository';
 
 export {
   AwsRepository,
@@ -20,6 +19,5 @@ export {
   StatusRespository,
   TagRepository,
   TaskRepository,
-  UserRepository,
-  VideoRepository
+  UserRepository
 };
