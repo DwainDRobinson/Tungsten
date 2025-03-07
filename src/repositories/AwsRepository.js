@@ -9,11 +9,7 @@ import {
   S3Client
 } from '@aws-sdk/client-s3';
 import config from '../config';
-import {
-  DEFAULT_COVERIMAGE_FILE_EXTENTION,
-  DEFAULT_THUMBNAIL_FILE_EXTENTION,
-  DEFAULT_VIDEO_FILE_EXTENTION
-} from '../constants';
+import { MEDIA } from '../constants';
 import logger from '../logger';
 
 const { aws } = config.sources;
@@ -46,11 +42,11 @@ const s3Client = new S3Client({
  * Video helper functions
  */
 const getVideoObjectKey = key => {
-  return `${key}.${DEFAULT_VIDEO_FILE_EXTENTION}`;
+  return `${key}.${MEDIA.DEFAULT_VIDEO_FILE_EXTENTION}`;
 };
 
 const getThumbnailObjectKey = key => {
-  return `${key}.${DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
+  return `${key}.${MEDIA.DEFAULT_THUMBNAIL_FILE_EXTENTION}`;
 };
 
 const getS3VideoParams = key => {
@@ -290,9 +286,8 @@ exports.deleteThumbnailByKey = key => {
  */
 
 const getCoverImageObjectKey = key => {
-  return `${key}.${DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
+  return `${key}.${MEDIA.DEFAULT_COVERIMAGE_FILE_EXTENTION}`;
 };
-
 
 const getS3CoverImageParams = key => {
   return {
@@ -326,7 +321,6 @@ exports.getIsCoverImageBucketAvailable = async () => {
   }
 };
 
-
 exports.getIsCoverImageObjectAvailable = async key => {
   try {
     const params = getS3CoverImageParams(key);
@@ -347,7 +341,6 @@ exports.getIsCoverImageObjectAvailable = async key => {
   }
 };
 
-
 exports.createCoverImageBucket = async () => {
   try {
     const params = getS3CoverImageParams();
@@ -365,7 +358,6 @@ exports.createCoverImageBucket = async () => {
     });
   }
 };
-
 
 exports.copyCoverImageObject = (oldKey, newKey) => {
   return new Promise(async (resolve, reject) => {
@@ -393,7 +385,6 @@ exports.copyCoverImageObject = (oldKey, newKey) => {
     }
   });
 };
-
 
 exports.deleteCoverImageByKey = key => {
   return new Promise(async (resolve, reject) => {
