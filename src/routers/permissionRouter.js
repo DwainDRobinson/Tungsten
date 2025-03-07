@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { PERMISSIONS } from '../constants';
 import { PermissionController } from '../controllers';
 import {
   hasPermissionHandler,
@@ -20,7 +21,7 @@ const router = Router();
 router.get(
   '/getPermissions',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   permissionQueryValidation,
   validationHandler,
   PermissionController.getPermissions
@@ -29,7 +30,7 @@ router.get(
 router.get(
   '/getPermission/:permissionId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   permissionIdParamValidation,
   validationHandler,
   PermissionController.getPermission
@@ -38,7 +39,7 @@ router.get(
 router.post(
   '/createPermission',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   permissionPostValidation,
   validationHandler,
   PermissionController.createPermission
@@ -47,7 +48,7 @@ router.post(
 router.put(
   '/updatePermission/:permissionId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   permissionUpdateValidation,
   validationHandler,
   PermissionController.updatePermission
@@ -56,7 +57,7 @@ router.put(
 router.delete(
   '/deletePermission/:permissionId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   permissionIdParamValidation,
   validationHandler,
   PermissionController.deletePermission

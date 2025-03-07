@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { PERMISSIONS } from '../constants';
 import { TaskController } from '../controllers';
 import {
   hasPermissionHandler,
@@ -60,7 +61,7 @@ router.put(
 router.delete(
   '/deleteTask/:taskId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   taskIdParamValidation,
   validationHandler,
   TaskController.deleteTask

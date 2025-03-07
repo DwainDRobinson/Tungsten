@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { PERMISSIONS } from '../constants';
 import { UserController } from '../controllers';
 import {
   hasPermissionHandler,
@@ -20,7 +21,7 @@ const router = Router();
 router.get(
   '/getUsers',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN, 'MANAGE_USERS']),
   userQueryValidation,
   validationHandler,
   UserController.getUsers
@@ -29,7 +30,11 @@ router.get(
 router.get(
   '/getUser/:userId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_VIEW']),
+  hasPermissionHandler([
+    PERMISSIONS.SYSTEM_ADMIN,
+    'MANAGE_USERS',
+    'PROFILE_VIEW'
+  ]),
   userIdParamValidation,
   validationHandler,
   UserController.getUser
@@ -38,7 +43,11 @@ router.get(
 router.post(
   '/createUser',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_CREATE']),
+  hasPermissionHandler([
+    PERMISSIONS.SYSTEM_ADMIN,
+    'MANAGE_USERS',
+    'PROFILE_CREATE'
+  ]),
   userCreationValidation,
   validationHandler,
   UserController.createUser
@@ -47,7 +56,11 @@ router.post(
 router.put(
   '/updateUser/:userId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_EDIT']),
+  hasPermissionHandler([
+    PERMISSIONS.SYSTEM_ADMIN,
+    'MANAGE_USERS',
+    'PROFILE_EDIT'
+  ]),
   userUpdateValidation,
   validationHandler,
   UserController.updateUser
@@ -56,7 +69,11 @@ router.put(
 router.delete(
   '/deleteUser/:userId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_DELETE']),
+  hasPermissionHandler([
+    PERMISSIONS.SYSTEM_ADMIN,
+    'MANAGE_USERS',
+    'PROFILE_DELETE'
+  ]),
   userIdParamValidation,
   validationHandler,
   UserController.deleteUser

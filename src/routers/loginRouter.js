@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { PERMISSIONS } from '../constants';
 import { LoginController } from '../controllers';
 import {
   hasPermissionHandler,
@@ -15,7 +16,11 @@ const router = Router();
 router.get(
   '/getLogins/:userId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN', 'MANAGE_USERS', 'PROFILE_VIEW']),
+  hasPermissionHandler([
+    PERMISSIONS.SYSTEM_ADMIN,
+    'MANAGE_USERS',
+    'PROFILE_VIEW'
+  ]),
   userIdParamValidation,
   validationHandler,
   LoginController.getLogins

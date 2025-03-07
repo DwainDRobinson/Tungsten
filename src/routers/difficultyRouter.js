@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { PERMISSIONS } from '../constants';
 import { DifficultyController } from '../controllers';
 import {
   hasPermissionHandler,
@@ -20,7 +21,7 @@ const router = Router();
 router.get(
   '/getDifficulties',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   difficultyQueryValidation,
   validationHandler,
   DifficultyController.getDifficulties
@@ -29,7 +30,7 @@ router.get(
 router.get(
   '/getDifficulty/:difficultyId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   difficultyIdParamValidation,
   validationHandler,
   DifficultyController.getDifficulty
@@ -38,7 +39,7 @@ router.get(
 router.post(
   '/createDifficulty',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   difficultyPostValidation,
   validationHandler,
   DifficultyController.createDifficulty
@@ -47,7 +48,7 @@ router.post(
 router.put(
   '/updateDifficulty/:difficultyId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   difficultyUpdateValidation,
   validationHandler,
   DifficultyController.updateDifficulty
@@ -56,7 +57,7 @@ router.put(
 router.delete(
   '/deleteDifficulty/:difficultyId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   difficultyIdParamValidation,
   validationHandler,
   DifficultyController.deleteDifficulty

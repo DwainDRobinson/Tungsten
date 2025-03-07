@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { PERMISSIONS } from '../constants';
 import { RoleController } from '../controllers';
 import {
   hasPermissionHandler,
@@ -20,7 +21,7 @@ const router = Router();
 router.get(
   '/getRoles',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   roleQueryValidation,
   validationHandler,
   RoleController.getRoles
@@ -29,7 +30,7 @@ router.get(
 router.get(
   '/getRole/:roleId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   roleIdParamValidation,
   validationHandler,
   RoleController.getRole
@@ -38,7 +39,7 @@ router.get(
 router.post(
   '/createRole',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   rolePostValidation,
   validationHandler,
   RoleController.createRole
@@ -47,7 +48,7 @@ router.post(
 router.put(
   '/updateRole/:roleId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   roleUpdateValidation,
   validationHandler,
   RoleController.updateRole
@@ -56,7 +57,7 @@ router.put(
 router.delete(
   '/deleteRole/:roleId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   roleIdParamValidation,
   validationHandler,
   RoleController.deleteRole

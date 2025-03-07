@@ -2,6 +2,7 @@
 
 import express from 'express';
 import config from '../config';
+import { PERMISSIONS } from '../constants';
 import {
   hasPermissionHandler,
   validateAuthorizationTokenHandler
@@ -35,14 +36,14 @@ router.get('/probeCheck', (_, res) => {
 router.get(
   '/getIp',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   (req, res) => res.send(req.ip)
 );
 
 router.get(
   '/getConfiguration',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   (_, res) => {
     res.status(HttpStatusCodes.OK).json(config);
   }

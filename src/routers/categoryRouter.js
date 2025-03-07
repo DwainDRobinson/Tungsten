@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { PERMISSIONS } from '../constants';
 import { CategoryController } from '../controllers';
 import {
   hasPermissionHandler,
@@ -20,7 +21,7 @@ const router = Router();
 router.get(
   '/getCategories',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   categoryQueryValidation,
   validationHandler,
   CategoryController.getCategories
@@ -29,7 +30,7 @@ router.get(
 router.get(
   '/getCategory/:categoryId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   categoryIdParamValidation,
   validationHandler,
   CategoryController.getCategory
@@ -38,7 +39,7 @@ router.get(
 router.post(
   '/createCategory',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   categoryPostValidation,
   validationHandler,
   CategoryController.createCategory
@@ -47,7 +48,7 @@ router.post(
 router.put(
   '/updateCategory/:categoryId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   categoryUpdateValidation,
   validationHandler,
   CategoryController.updateCategory
@@ -56,7 +57,7 @@ router.put(
 router.delete(
   '/deleteCategory/:categoryId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   categoryIdParamValidation,
   validationHandler,
   CategoryController.deleteCategory

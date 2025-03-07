@@ -1,0 +1,12 @@
+'use strict';
+
+const ROLES = {
+  ADMIN: 'SYSTEM_ADMIN',
+  PARENT: 'PARENT',
+  GUARDIAN: 'GUARDIAN',
+  THERAPIST: 'THERAPIST',
+  DIRECTOR: 'DIRECTOR',
+  CHILD: 'CHILD'
+};
+
+export default ROLES;

@@ -1,6 +1,7 @@
 'use strict';
 
 import express from 'express';
+import { PERMISSIONS } from '../constants';
 import { TagController } from '../controllers';
 import {
   hasPermissionHandler,
@@ -20,7 +21,7 @@ const router = Router();
 router.get(
   '/getTags',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   tagQueryValidation,
   validationHandler,
   TagController.getTags
@@ -29,7 +30,7 @@ router.get(
 router.get(
   '/getTag/:tagId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   tagIdParamValidation,
   validationHandler,
   TagController.getTag
@@ -38,7 +39,7 @@ router.get(
 router.post(
   '/createTag',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   tagPostValidation,
   validationHandler,
   TagController.createTag
@@ -47,7 +48,7 @@ router.post(
 router.put(
   '/updateTag/:tagId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   tagUpdateValidation,
   validationHandler,
   TagController.updateTag
@@ -56,7 +57,7 @@ router.put(
 router.delete(
   '/deleteTag/:tagId',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler(['SYSTEM_ADMIN']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN]),
   tagIdParamValidation,
   validationHandler,
   TagController.deleteTag

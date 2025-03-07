@@ -9,4 +9,6 @@ const PASSWORD_VALIDATION_MESSAGE =
 export { PASSWORD_VALIDATION_MESSAGE, STRONG_PASSWORD_VALIDATIONS_REGEX };
 
 export { default as MEDIA } from './media';
+export { default as PERMISSIONS } from './permissions';
+export { default as ROLES } from './roles';
 export { default as STATES } from './states';
