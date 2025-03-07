@@ -9,7 +9,6 @@ import noCache from 'nocache';
 import responseTime from 'response-time';
 
 import config from './config';
-import { BASE_URL } from './constants';
 import logger from './logger';
 import { rateLimitHandler } from './middlewares';
 import {
@@ -27,6 +26,8 @@ import {
   userRouter
 } from './routers';
 import { isProductionEnvironment } from './utilities/boolean';
+
+const BASE_URL = `/${config.APP_NAME}-service`;
 
 // Create the Express application object
 const server = express();
@@ -50,10 +51,8 @@ server.use(
 logger.info('CORS enabled.');
 
 if (isProductionEnvironment()) {
-  const { TRUST_PROXY } = config;
-
   // specify a single subnet
-  server.set('trust proxy', TRUST_PROXY);
+  server.set('trust proxy', config.TRUST_PROXY);
   logger.info('Proxy setting enabled.');
 
   //Helmet middleware

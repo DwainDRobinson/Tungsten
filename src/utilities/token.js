@@ -4,11 +4,13 @@ import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import { customAlphabet } from 'nanoid';
 import config from '../config';
-import { CUSTOM_ALPHABET } from '../constants';
 
 const { sign, verify } = jwt;
 const { auth } = config;
 const { JWT_SECRET, TOKEN_EXPIRY } = auth;
+
+const CUSTOM_ALPHABET =
+  '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const generateAuthorizationToken = user => {
   const { email, fullName, role } = user;

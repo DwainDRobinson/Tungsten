@@ -1,0 +1,9 @@
+'use strict';
+
+const MEDIA = {
+  DEFAULT_VIDEO_FILE_EXTENTION: 'mp4',
+  DEFAULT_THUMBNAIL_FILE_EXTENTION: 'jpeg',
+  DEFAULT_COVERIMAGE_FILE_EXTENTION: 'jpeg'
+};
+
+export default MEDIA;
