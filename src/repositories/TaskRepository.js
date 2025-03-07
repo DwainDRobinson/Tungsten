@@ -1,6 +1,7 @@
 'use strict';
 
 import { UserRepository } from '.';
+import { ROLES } from '../constants';
 import logger from '../logger';
 import models from '../models';
 
@@ -8,18 +9,33 @@ exports.getTasks = async query => {
   try {
     const { Task } = models;
     const {
+      userId,
       page = 1,
       limit = 10,
       sort = 'createdAt',
-      order = 'desc',
-      ...filters
+      order = 'desc'
     } = query;
+
+    const [error, user] = await UserRepository.getUserById(userId);
+
+    if (error || !user) {
+      return [new Error(error.message)];
+    }
 
     // Build filter query
     const search = {};
-    Object.keys(filters).forEach(key => {
-      search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-    });
+
+    const { role } = user;
+
+    if (role === ROLES.ADMIN) {
+      search = {}; // System Admin can see all tasks
+    } else if (role !== ROLES.CHILD) {
+      const descendantUsers = await UserRepository.getHierarchyOfUsers(userId);
+      const userIds = [userId, ...descendantUsers.map(u => u.userId)];
+      search = { assignedTo: { $in: userIds } };
+    } else {
+      search = { assignedTo: userId }; // Child sees only their own tasks
+    }
 
     const options = {
       skip: (page - 1) * limit,
@@ -58,32 +74,6 @@ exports.getTask = async taskId => {
   }
 };
 
-exports.getTaskByUser = async userId => {
-  try {
-    const { Task } = models;
-    const task = await Task.findOne({ userId });
-    return task;
-  } catch (err) {
-    console.error(err);
-    logger.error(`Error getting role data from db by userId: ${err.message}`);
-    return [new Error('Unable to get video data from db.')];
-  }
-};
-
-exports.getTasksByUser = async userId => {
-  try {
-    const { Task } = models;
-    const descendantUsers = await UserRepository.getHierarchyOfUsers(userId);
-    const userIds = [userId, ...descendantUsers.map(u => u.userId)];
-    const tasks = await Task.find({ assignedTo: { $in: userIds } });
-    return tasks;
-  } catch (err) {
-    console.error(err);
-    logger.error(`Error getting task data from db by userId: ${err.message}`);
-    return [new Error('Unable to get video data from db.')];
-  }
-};
-
 exports.getTaskByName = async name => {
   try {
     const { Task } = models;
@@ -105,19 +95,19 @@ exports.createTask = async payload => {
     }
     const t = new Task(payload);
     const createdTask = await t.save();
-    const { description, name, difficultyId } = createdTask;
-    return [null, { description, name, difficultyId }];
+    const { description, name, taskId } = createdTask;
+    return [null, { description, name, taskId }];
   } catch (err) {
     console.error(err);
     logger.error(`Error saving task data to db: ${err.message}`);
-    return [new Error('Unable to get video data from db.')];
+    return [new Error('Unable to get task data from db.')];
   }
 };
 
-exports.updateTask = async (difficultyId, payload) => {
+exports.updateTask = async (taskId, payload) => {
   try {
     const { Task } = models;
-    const filter = { difficultyId };
+    const filter = { taskId };
     const options = { upsert: true, new: true };
     const update = { ...payload };
     const task = await Task.findOneAndUpdate(filter, update, options);
@@ -125,14 +115,14 @@ exports.updateTask = async (difficultyId, payload) => {
   } catch (err) {
     console.error(err);
     logger.error(`Error updating task data to db by userId: ${err.message}`);
-    return [new Error('Unable to get video data from db.')];
+    return [new Error('Unable to get task data from db.')];
   }
 };
 
-exports.deleteTask = async difficultyId => {
+exports.deleteTask = async taskId => {
   try {
     const { Task } = models;
-    const deletedTask = await Task.deleteOne({ difficultyId });
+    const deletedTask = await Task.deleteOne({ taskId });
     if (deletedTask.deletedCount > 0) {
       return [null, deletedTask];
     }
@@ -140,6 +130,6 @@ exports.deleteTask = async difficultyId => {
   } catch (err) {
     console.error(err);
     logger.error(`Error deleting task data from db by id: ${err.message}`);
-    return [new Error('Unable to get video data from db.')];
+    return [new Error('Unable to get task data from db.')];
   }
 };

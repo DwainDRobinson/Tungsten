@@ -27,14 +27,6 @@ router.get(
 );
 
 router.get(
-  '/getTasks/:userId',
-  validateAuthorizationTokenHandler,
-  taskIdParamValidation,
-  validationHandler,
-  TaskController.getTasksByUser
-);
-
-router.get(
   '/getTask/:taskId',
   validateAuthorizationTokenHandler,
   taskIdParamValidation,

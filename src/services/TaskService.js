@@ -49,26 +49,6 @@ exports.getTask = async taskId => {
   }
 };
 
-exports.getTasksByUser = async userId => {
-  try {
-    const [error, tasks] = await TaskRepository.getTasksByUser(userId);
-    if (tasks) {
-      return [
-        HttpStatusCodes.OK,
-        {
-          message: 'Tasks was successfully fetched.',
-          tasks
-        }
-      ];
-    }
-    return badRequest(error.message);
-  } catch (err) {
-    console.log(err);
-    logger.error(`Error getting tasks: ${err.message}`);
-    return internalServerErrorRequest('Error getting tasks.');
-  }
-};
-
 exports.createTask = async payload => {
   try {
     const [error, task] = await TaskRepository.createTask(payload);
