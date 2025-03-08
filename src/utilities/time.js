@@ -1,6 +1,6 @@
 'use strict';
 
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const fancyTimeFormat = duration => {
   // Hours, minutes and seconds
@@ -21,7 +21,7 @@ const fancyTimeFormat = duration => {
 };
 
 const getCurrentUTCTimestampFormatted = () => {
-  return moment().utc().format('YYYY-MM-DD HH:mm:ss');
+  return dayjs().utc().format('YYYY-MM-DD HH:mm:ss');
 };
 
 export { fancyTimeFormat, getCurrentUTCTimestampFormatted };

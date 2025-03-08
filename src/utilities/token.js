@@ -1,7 +1,7 @@
 'use strict';
 
+import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
-import moment from 'moment';
 import { customAlphabet } from 'nanoid';
 import config from '../config';
 
@@ -13,16 +13,18 @@ const CUSTOM_ALPHABET =
   '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const generateAuthorizationToken = user => {
-  const { email, fullName, role } = user;
-  const expirationTime = moment().add(TOKEN_EXPIRY, 'minutes').valueOf() / 1000;
+  const { email, fullName, role, userId } = user;
+
+  const expiresIn = dayjs().add(TOKEN_EXPIRY, 'minute').unix();
+  const payload = {
+    email,
+    fullName,
+    role,
+    userId
+  };
+
   try {
-    return sign(
-      {
-        exp: Math.ceil(expirationTime),
-        data: { email, fullName, role }
-      },
-      JWT_SECRET
-    );
+    return sign({ ...payload, exp: expiresIn }, JWT_SECRET);
   } catch {
     console.error(err);
     return undefined;
@@ -35,10 +37,10 @@ const verifyJWTToken = token => {
     if (decoded) {
       return decoded;
     }
-    return false;
+    return undefined;
   } catch (err) {
     console.error(err);
-    return false;
+    return undefined;
   }
 };
 
