@@ -41,7 +41,10 @@ const userSchema = new Schema(
       type: [Number],
       default: []
     },
-    authorized: {}
+    points: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true }
 );
