@@ -21,7 +21,7 @@ const router = Router();
 router.get(
   '/getUsers',
   validateAuthorizationTokenHandler,
-  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN, 'MANAGE_USERS']),
+  hasPermissionHandler([PERMISSIONS.SYSTEM_ADMIN, PERMISSIONS.MANAGE_USERS]),
   userQueryValidation,
   validationHandler,
   UserController.getUsers
@@ -32,8 +32,8 @@ router.get(
   validateAuthorizationTokenHandler,
   hasPermissionHandler([
     PERMISSIONS.SYSTEM_ADMIN,
-    'MANAGE_USERS',
-    'PROFILE_VIEW'
+    PERMISSIONS.MANAGE_USERS,
+    PERMISSIONS.PROFILE_VIEW
   ]),
   userIdParamValidation,
   validationHandler,
@@ -45,8 +45,8 @@ router.post(
   validateAuthorizationTokenHandler,
   hasPermissionHandler([
     PERMISSIONS.SYSTEM_ADMIN,
-    'MANAGE_USERS',
-    'PROFILE_CREATE'
+    PERMISSIONS.MANAGE_USERS,
+    PERMISSIONS.PROFILE_CREATE
   ]),
   userCreationValidation,
   validationHandler,
@@ -58,8 +58,8 @@ router.put(
   validateAuthorizationTokenHandler,
   hasPermissionHandler([
     PERMISSIONS.SYSTEM_ADMIN,
-    'MANAGE_USERS',
-    'PROFILE_EDIT'
+    PERMISSIONS.MANAGE_USERS,
+    PERMISSIONS.PROFILE_UPDATE
   ]),
   userUpdateValidation,
   validationHandler,
@@ -71,8 +71,8 @@ router.delete(
   validateAuthorizationTokenHandler,
   hasPermissionHandler([
     PERMISSIONS.SYSTEM_ADMIN,
-    'MANAGE_USERS',
-    'PROFILE_DELETE'
+    PERMISSIONS.MANAGE_USERS,
+    PERMISSIONS.PROFILE_DELETE
   ]),
   userIdParamValidation,
   validationHandler,

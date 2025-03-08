@@ -18,8 +18,8 @@ router.get(
   validateAuthorizationTokenHandler,
   hasPermissionHandler([
     PERMISSIONS.SYSTEM_ADMIN,
-    'MANAGE_USERS',
-    'PROFILE_VIEW'
+    PERMISSIONS.MANAGE_USERS,
+    PERMISSIONS.PROFILE_VIEW
   ]),
   userIdParamValidation,
   validationHandler,
