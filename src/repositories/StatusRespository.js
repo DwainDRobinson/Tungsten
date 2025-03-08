@@ -39,7 +39,9 @@ exports.getStatuses = async query => {
       return [null, result];
     }
   } catch (err) {
-    logger.error('Error getting status data from db: ', err);
+    console.error(err);
+    logger.error(`Error getting status data from db: ${err.message}`);
+    return [new Error('Error getting status data from db.')];
   }
 };
 
@@ -49,7 +51,9 @@ exports.getStatus = async statusId => {
     const status = await Status.findOne({ statusId });
     return status;
   } catch (err) {
-    logger.error('Error getting status data from db by id: ', err);
+    console.error(err);
+    logger.error(`Error getting status data from db by id: ${err.message}`);
+    return [new Error('Error getting status data from db by id.')];
   }
 };
 
@@ -59,7 +63,9 @@ exports.getStatusByName = async name => {
     const status = await Status.findOne({ name });
     return status;
   } catch (err) {
-    logger.error('Error getting status data from db by name: ', err);
+    console.error(err);
+    logger.error(`Error getting status data from db by name: ${err.message}`);
+    return [new Error('Error getting status data from db by name.')];
   }
 };
 
@@ -75,7 +81,9 @@ exports.createStatus = async payload => {
     const { description, name, statusId } = createdStatus;
     return [null, { description, name, statusId }];
   } catch (err) {
-    logger.error('Error saving status data to db: ', err);
+    console.error(err);
+    logger.error(`Error saving status data to db: ${err.message}`);
+    return [new Error('Error saving status data to db.')];
   }
 };
 
@@ -88,7 +96,9 @@ exports.updateStatus = async (statusId, payload) => {
     const status = await Status.findOneAndUpdate(filter, update, options);
     return [null, status];
   } catch (err) {
-    logger.error('Error updating status data to db: ', err);
+    console.error(err);
+    logger.error(`Error updating status data to db: ${err.message}`);
+    return [new Error('Error updating status data to db.')];
   }
 };
 
@@ -101,6 +111,8 @@ exports.deleteStatus = async statusId => {
     }
     return [new Error('Unable to find status to delete details.')()];
   } catch (err) {
-    logger.error('Error deleting status by id: ', err);
+    console.error(err);
+    logger.error(`Error deleting status data from db: ${err.message}`);
+    return [new Error('Error deleting status data from db.')];
   }
 };

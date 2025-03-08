@@ -41,7 +41,9 @@ exports.getCategories = async query => {
       return [null, result];
     }
   } catch (err) {
-    logger.error('Error getting difficulty data from db: ', err);
+    console.error(err);
+    logger.error(`Error getting difficulty data from db.: ${err.message}`);
+    return [new Error('Error getting difficulty data from db.')];
   }
 };
 
@@ -51,7 +53,9 @@ exports.getDifficulty = async difficultyId => {
     const difficulty = await Difficulty.findOne({ difficultyId });
     return difficulty;
   } catch (err) {
-    logger.error('Error getting difficulty data from db by id: ', err);
+    console.error(err);
+    logger.error(`Error getting difficulty data from db by id: ${err.message}`);
+    return [new Error('Error getting difficulty data from db by id.')];
   }
 };
 
@@ -61,7 +65,11 @@ exports.getDifficultyByName = async name => {
     const difficulty = await Difficulty.findOne({ name });
     return difficulty;
   } catch (err) {
-    logger.error('Error getting difficulty data from db by name: ', err);
+    console.error(err);
+    logger.error(
+      `Error getting difficulty data from db by name: ${err.message}`
+    );
+    return [new Error('Error getting difficulty data from db by name.')];
   }
 };
 
@@ -77,7 +85,9 @@ exports.createDifficulty = async payload => {
     const { description, name, difficultyId } = createdDifficulty;
     return [null, { description, name, difficultyId }];
   } catch (err) {
-    logger.error('Error saving difficulty data to db: ', err);
+    console.error(err);
+    logger.error(`Error saving difficulty data to db: ${err.message}`);
+    return [new Error('Error saving difficulty data to db.')];
   }
 };
 
@@ -94,7 +104,9 @@ exports.updateDifficulty = async (difficultyId, payload) => {
     );
     return [null, difficulty];
   } catch (err) {
-    logger.error('Error updating difficulty data to db: ', err);
+    console.error(err);
+    logger.error(`Error updating difficulty data to db: ${err.message}`);
+    return [new Error('Error updating difficulty data to db.')];
   }
 };
 
@@ -107,6 +119,8 @@ exports.deleteDifficulty = async difficultyId => {
     }
     return [new Error('Unable to find difficulty to delete details.')()];
   } catch (err) {
-    logger.error('Error deleting difficulty by id: ', err);
+    console.error(err);
+    logger.error(`Error deleting difficulty by id: ${err.message}`);
+    return [new Error('Error deleting difficulty by id.')];
   }
 };

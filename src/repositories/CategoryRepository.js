@@ -39,7 +39,9 @@ exports.getCategories = async query => {
       return [null, result];
     }
   } catch (err) {
-    logger.error('Error getting category data from db: ', err);
+    console.error(err);
+    logger.error(`Error getting category data from db: ${err.message}`);
+    return [new Error('Error getting category data from db.')];
   }
 };
 
@@ -49,7 +51,9 @@ exports.getCategory = async categoryId => {
     const category = await Category.findOne({ categoryId });
     return category;
   } catch (err) {
-    logger.error('Error getting category data from db by id: ', err);
+    console.error(err);
+    logger.error(`Error getting category data from db by id: ${err.message}`);
+    return [new Error('Error getting category data from db by id.')];
   }
 };
 
@@ -59,7 +63,9 @@ exports.getCategoryByName = async name => {
     const category = await Category.findOne({ name });
     return category;
   } catch (err) {
-    logger.error('Error getting category data from db by name: ', err);
+    console.error(err);
+    logger.error(`Error getting category data from db by name: ${err.message}`);
+    return [new Error('Error getting category data from db by name.')];
   }
 };
 
@@ -75,7 +81,9 @@ exports.createCategory = async payload => {
     const { description, name, categoryId } = createdCategory;
     return [null, { description, name, categoryId }];
   } catch (err) {
-    logger.error('Error saving category data to db: ', err);
+    console.error(err);
+    logger.error(`Error saving category data to db: ${err.message}`);
+    return [new Error('Error saving category data to db.')];
   }
 };
 
@@ -88,7 +96,9 @@ exports.updateCategory = async (categoryId, payload) => {
     const category = await Category.findOneAndUpdate(filter, update, options);
     return [null, category];
   } catch (err) {
-    logger.error('Error updating category data to db: ', err);
+    console.error(err);
+    logger.error(`Error updating category data to db: ${err.message}`);
+    return [new Error('Error updating category data to db.')];
   }
 };
 
@@ -99,8 +109,10 @@ exports.deleteCategory = async categoryId => {
     if (deletedCategory.deletedCount > 0) {
       return [null, deletedCategory];
     }
-    return [new Error('Unable to find category to delete details.')()];
+    return [new Error('Unable to find category to delete details.')];
   } catch (err) {
-    logger.error('Error deleting category by id: ', err);
+    console.error(err);
+    logger.error(`Unable to find category to delete details.: ${err.message}`);
+    return [new Error('Unable to find category to delete details.')];
   }
 };
