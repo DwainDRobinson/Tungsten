@@ -17,10 +17,6 @@ const tagSchema = new Schema(
       unique: true,
       index: true
     },
-    value: {
-      type: String,
-      required: true
-    },
     description: {
       type: String,
       required: true
