@@ -35,6 +35,11 @@ statusSchema.set('autoCreate', !isProductionEnvironment());
 statusSchema.plugin(autoIncrement, { inc_field: 'statusId' });
 
 /**
+ * Creates index in database for statusId
+ */
+statusSchema.index({ statusId: 1 });
+
+/**
  * Create Status model out of statusSchema
  */
 const Status = model('Status', statusSchema);

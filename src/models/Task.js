@@ -1,16 +1,20 @@
 import mongoose from 'mongoose';
-import mongooseSequence from 'mongoose-sequence';
+import { v4 as uuidv4 } from 'uuid';
 import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema, model } = mongoose;
-const autoIncrement = mongooseSequence(mongoose);
 
 const taskSchema = new Schema(
   {
     title: {
       type: String,
       required: true,
-      trim: true
+      index: true
+    },
+    taskId: {
+      type: String,
+      index: true,
+      default: uuidv4()
     },
     description: {
       type: String,
@@ -40,7 +44,7 @@ const taskSchema = new Schema(
     },
     difficulty: {
       type: String,
-      default: 'Medium'
+      default: 'MEDIUM'
     },
     isActive: {
       type: Boolean,
@@ -48,7 +52,7 @@ const taskSchema = new Schema(
     },
     status: {
       type: String,
-      default: 'Pending'
+      default: 'PENDING'
     },
     expirationDate: {
       type: Date
@@ -64,16 +68,6 @@ const taskSchema = new Schema(
  * Set the autoCreate option on models if not on production
  */
 taskSchema.set('autoCreate', !isProductionEnvironment());
-
-/**
- * Increments taskId everytime an instances is created
- */
-taskSchema.plugin(autoIncrement, { inc_field: 'taskId' });
-
-/**
- * Creates index in database for taskId
- */
-taskSchema.index({ taskId: 1 });
 
 const Task = model('Task', taskSchema);
 

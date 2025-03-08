@@ -2,13 +2,12 @@
 
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
-import mongooseSequence from 'mongoose-sequence';
+import { v4 as uuidv4 } from 'uuid';
 import config from '../config';
 import { STATES } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema, model } = mongoose;
-const autoIncrement = mongooseSequence(mongoose);
 const { HASH_SALT } = config;
 
 //USER SCHEMA
@@ -35,6 +34,11 @@ const userSchema = new Schema(
     state: {
       type: String,
       enum: STATES
+    },
+    userId: {
+      type: String,
+      index: true,
+      default: uuidv4()
     },
     zipCode: { type: String },
     careGivers: {
@@ -100,16 +104,6 @@ userSchema.methods.getIsValidPassword = function (password) {
  * Set the autoCreate option on models if not on production
  */
 userSchema.set('autoCreate', !isProductionEnvironment());
-
-/**
- * Increments userId everytime an instances is created
- */
-userSchema.plugin(autoIncrement, { inc_field: 'userId' });
-
-/**
- * Creates index in database for userId
- */
-userSchema.index({ userId: 1 });
 
 /**
  * Create User model out of userSchema

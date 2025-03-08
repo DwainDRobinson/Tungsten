@@ -13,7 +13,7 @@ const loginSchema = new Schema({
     required: true,
     index: true
   },
-  userId: {
+  asignedTo: {
     type: Number,
     index: true
   },
