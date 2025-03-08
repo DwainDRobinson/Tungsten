@@ -6,7 +6,9 @@ import { DifficultyService } from '../services';
 exports.getDifficulties = async (req, res, next) => {
   try {
     const { query } = req;
-    const [statusCode, payload] = await DifficultyService.getdifficultys(query);
+    const [statusCode, payload] = await DifficultyService.getDifficulties(
+      query
+    );
     res.status(statusCode).send(payload);
   } catch (err) {
     logger.error(`Error with getting difficulties: ${err.message}`);
@@ -17,7 +19,7 @@ exports.getDifficulties = async (req, res, next) => {
 exports.getDifficulty = async (req, res, next) => {
   try {
     const { difficultyId } = req.params;
-    const [statusCode, response] = await DifficultyService.getdifficulty(
+    const [statusCode, response] = await DifficultyService.getDifficulty(
       difficultyId
     );
     res.status(statusCode).send(response);
@@ -32,7 +34,7 @@ exports.getDifficulty = async (req, res, next) => {
 exports.createDifficulty = async (req, res, next) => {
   try {
     const { body } = req;
-    const [statusCode, payload] = await DifficultyService.createdifficulty(
+    const [statusCode, payload] = await DifficultyService.createDifficulty(
       body
     );
     res.status(statusCode).send(payload);
@@ -46,7 +48,7 @@ exports.updateDifficulty = async (req, res, next) => {
   try {
     const { difficultyId } = req.params;
     const { name } = req.body;
-    const [statusCode, response] = await DifficultyService.updatedifficulty(
+    const [statusCode, response] = await DifficultyService.updateDifficulty(
       difficultyId,
       name
     );
@@ -62,7 +64,7 @@ exports.updateDifficulty = async (req, res, next) => {
 exports.deleteDifficulty = async (req, res, next) => {
   try {
     const { difficultyId } = req.params;
-    const [statusCode, response] = await DifficultyService.deletedifficulty(
+    const [statusCode, response] = await DifficultyService.deleteDifficulty(
       difficultyId
     );
     res.status(statusCode).send(response);

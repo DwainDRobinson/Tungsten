@@ -8,13 +8,13 @@ import {
   internalServerErrorRequest
 } from '../response-codes';
 
-exports.getDifficulties = async query => {
+exports.getStatuses = async query => {
   try {
-    const statuses = await StatusRespository.getDifficulties(query);
+    const statuses = await StatusRespository.getStatuses(query);
     if (statuses) {
       return [
         HttpStatusCodes.OK,
-        { message: 'Difficulties fetched from db with success', statuses }
+        { message: 'Statuses fetched from db with success', statuses }
       ];
     } else {
       return badRequest(

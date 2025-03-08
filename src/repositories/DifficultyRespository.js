@@ -3,7 +3,7 @@
 import logger from '../logger';
 import models from '../models';
 
-exports.getCategories = async query => {
+exports.getDifficulties = async query => {
   try {
     const { Difficulty } = models;
     const {
