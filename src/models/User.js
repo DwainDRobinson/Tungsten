@@ -2,10 +2,10 @@
 
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 import config from '../config';
-import { STATES } from '../constants';
+import { GENDERS, STATES } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
+import { generateUid } from '../utilities/token';
 
 const { Schema, model } = mongoose;
 const { HASH_SALT } = config;
@@ -28,19 +28,11 @@ const userSchema = new Schema(
       type: [String],
       required: true
     },
-    dob: { type: String },
-    gender: { type: String },
-    city: { type: String },
-    state: {
-      type: String,
-      enum: STATES
-    },
     userId: {
       type: String,
       index: true,
-      default: uuidv4()
+      default: generateUid()
     },
-    zipCode: { type: String },
     careGivers: {
       type: [Number],
       default: []
@@ -48,7 +40,18 @@ const userSchema = new Schema(
     points: {
       type: Number,
       default: 0
-    }
+    },
+    dob: { type: String },
+    gender: {
+      type: String,
+      enum: GENDERS
+    },
+    city: { type: String },
+    state: {
+      type: String,
+      enum: STATES
+    },
+    zipCode: { type: String }
   },
   { timestamps: true }
 );

@@ -1,6 +1,7 @@
 'use strict';
 
 import mongoose from 'mongoose';
+import { MFA, RESULTS } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
 
 const { Schema, model } = mongoose;
@@ -18,8 +19,7 @@ const loginSchema = new Schema({
     index: true
   },
   ipAddress: {
-    type: String,
-    required: true
+    type: String
   },
   userAgent: {
     type: String
@@ -30,8 +30,9 @@ const loginSchema = new Schema({
   },
   result: {
     type: String,
-    enum: ['SUCCESS', 'FAILED'],
-    required: true
+    enum: RESULTS,
+    required: true,
+    index: true
   },
   failureReason: {
     type: String
@@ -42,7 +43,7 @@ const loginSchema = new Schema({
   },
   mfaMethod: {
     type: String,
-    enum: ['SMS', 'EMAIL', 'APP'],
+    enum: MFA,
     default: null
   },
   mfaVerified: {

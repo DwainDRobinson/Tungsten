@@ -1,5 +1,6 @@
 'use strict';
 
+import crypto from 'crypto';
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 import { customAlphabet } from 'nanoid';
@@ -44,8 +45,13 @@ const verifyJWTToken = token => {
   }
 };
 
-const generateOTPCode = () => {
-  return customAlphabet(CUSTOM_ALPHABET, 6)();
-};
+const generateOTPCode = () => customAlphabet(CUSTOM_ALPHABET, 6)();
 
-export { generateAuthorizationToken, generateOTPCode, verifyJWTToken };
+const generateUid = () => crypto.randomUUID();
+
+export {
+  generateAuthorizationToken,
+  generateOTPCode,
+  generateUid,
+  verifyJWTToken
+};

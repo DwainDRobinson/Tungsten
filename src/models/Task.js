@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
+import { DIFFICULTY, STATUS } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
+import { generateUid } from '../utilities/token';
 
 const { Schema, model } = mongoose;
 
@@ -14,7 +15,7 @@ const taskSchema = new Schema(
     taskId: {
       type: String,
       index: true,
-      default: uuidv4()
+      default: generateUid()
     },
     description: {
       type: String,
@@ -34,9 +35,6 @@ const taskSchema = new Schema(
       required: true,
       index: true
     },
-    tags: {
-      type: [String]
-    },
     points: {
       type: Number,
       required: true,
@@ -44,7 +42,7 @@ const taskSchema = new Schema(
     },
     difficulty: {
       type: String,
-      default: 'MEDIUM'
+      default: DIFFICULTY.MEDIUM
     },
     isActive: {
       type: Boolean,
@@ -52,14 +50,19 @@ const taskSchema = new Schema(
     },
     status: {
       type: String,
-      default: 'PENDING'
-    },
-    expirationDate: {
-      type: Date
+      default: STATUS.INPROGRESS
     },
     completedAt: {
       type: Date
-    }
+    },
+    tags: {
+      type: [String]
+    },
+    files: [
+      {
+        type: String
+      }
+    ]
   },
   { timestamps: true }
 );

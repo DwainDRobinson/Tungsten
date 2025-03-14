@@ -1,27 +1,21 @@
 'use strict';
 
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const fancyTimeFormat = duration => {
+  const pad = s => (s < 10 ? '0' : '') + s;
   // Hours, minutes and seconds
-  const hrs = ~~(duration / 3600);
-  const mins = ~~((duration % 3600) / 60);
-  const secs = ~~duration % 60;
+  const hours = Math.floor(duration / (60 * 60));
+  const minutes = Math.floor((duration % (60 * 60)) / 60);
+  const seconds = Math.floor(duration % 60);
 
-  // Output like "1:01" or "4:03:59" or "123:03:59"
-  let ret = '';
-
-  if (hrs > 0) {
-    ret += '' + hrs + ':' + (mins < 10 ? '0' : '');
-  }
-
-  ret += '' + mins + ':' + (secs < 10 ? '0' : '');
-  ret += '' + secs;
-  return ret;
+  return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
 };
 
-const getCurrentUTCTimestampFormatted = () => {
-  return dayjs().utc().format('YYYY-MM-DD HH:mm:ss');
-};
+const getCurrentUTCTimestampFormatted = () =>
+  dayjs().utc().format('YYYY-MM-DD HH:mm:ss');
 
 export { fancyTimeFormat, getCurrentUTCTimestampFormatted };
