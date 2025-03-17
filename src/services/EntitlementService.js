@@ -1,7 +1,5 @@
 'use strict';
 
-import logger from '../logger';
-
 const checkPermissions = (requiredPermissions, userPermissions) => {
   try {
     return requiredPermissions.every(permission =>
