@@ -2,6 +2,7 @@
 
 import logger from '../logger';
 import models from '../models';
+import { isObjectEmpty } from '../utilities/objects';
 
 exports.getCategories = async query => {
   try {
@@ -16,10 +17,11 @@ exports.getCategories = async query => {
 
     // Build filter query
     const search = {};
-    Object.keys(filters).forEach(key => {
-      search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-    });
-
+    if (!isObjectEmpty(filters)) {
+      Object.keys(filters).forEach(key => {
+        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
+      });
+    }
     const options = {
       skip: (page - 1) * limit,
       limit: parseInt(limit),
