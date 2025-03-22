@@ -22,7 +22,8 @@ const userSchema = new Schema(
       index: true
     },
     password: { type: String, required: true },
-    fullName: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     role: { type: String, required: true },
     permissions: {
       type: [String],
@@ -32,10 +33,6 @@ const userSchema = new Schema(
       type: String,
       index: true,
       default: generateUid()
-    },
-    careGivers: {
-      type: [Number],
-      default: []
     },
     points: {
       type: Number,
@@ -73,6 +70,7 @@ userSchema.pre('save', function (next) {
   //Hash password only if the password has been changed or is new
   if (!user.isModified('password')) return next();
   user.password = getHashedPassword(user.password);
+
   return next();
 });
 

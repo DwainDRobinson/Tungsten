@@ -3,22 +3,43 @@
 import config from './config';
 import source, {
   closeDatabaseConnections,
-  getDatabaseConnectionString,
-  gracefulExit
+  getDatabaseConnectionString
 } from './database';
 import logger from './logger';
+import seedData from './seed';
 import server from './server';
 import { getCurrentUTCTimestampFormatted } from './utilities/time';
+
+const gracefulExit = () => {
+  //Gracefully shuts down application by disconnecting from all active connections to db and then process.exit(0)
+  logger.info('Shutting down application.');
+  closeDatabaseConnections().then(() => {
+    process.exit(0);
+  });
+};
 
 /**
  * Connects to database
  */
-const initializeDBConnection = () => {
+const initializeDBConnection = async () => {
   const { options } = config.sources.database;
   try {
-    source.connect(getDatabaseConnectionString(), options);
+    await source.connect(getDatabaseConnectionString(), options);
   } catch (e) {
     logger.error(`Error connecting to db: ${e}`);
+    throw e;
+  }
+};
+
+/**
+ * Seeds data into the database
+ */
+const initializeSeedData = async () => {
+  try {
+    await seedData();
+    logger.info(`Database seeded successfully.`);
+  } catch (e) {
+    logger.error(`Error seeding data into db: ${e}`);
     throw e;
   }
 };
@@ -43,7 +64,8 @@ const startServer = () => {
 const runApplication = async () => {
   const { APP_NAME } = config;
   logger.info(`Starting ${APP_NAME} app...`);
-  initializeDBConnection();
+  await initializeDBConnection();
+  await initializeSeedData();
   startServer();
 };
 

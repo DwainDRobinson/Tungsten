@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { DIFFICULTY, STATUS } from '../constants';
+import { DIFFICULTY, STATUSES } from '../constants';
 import { isProductionEnvironment } from '../utilities/boolean';
 import { generateUid } from '../utilities/token';
 
@@ -15,7 +15,8 @@ const taskSchema = new Schema(
     taskId: {
       type: String,
       index: true,
-      default: generateUid()
+      unique: true,
+      default: () => generateUid()
     },
     description: {
       type: String,
@@ -50,7 +51,7 @@ const taskSchema = new Schema(
     },
     status: {
       type: String,
-      default: STATUS.INPROGRESS
+      default: STATUSES.CREATED
     },
     completedAt: {
       type: Date

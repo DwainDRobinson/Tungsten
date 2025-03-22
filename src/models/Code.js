@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import mongooseSequence from 'mongoose-sequence';
 import config from '../config';
 import { isProductionEnvironment } from '../utilities/boolean';
+import { generateOTPCode } from '../utilities/token';
 
 const { Schema, model } = mongoose;
 const { sources } = config;
@@ -26,11 +27,12 @@ const optCodeSchema = new Schema({
   },
   otpCode: {
     type: String,
-    required: true
+    required: true,
+    default: () => generateOTPCode()
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: () => Date.now,
     expires
   }
 });

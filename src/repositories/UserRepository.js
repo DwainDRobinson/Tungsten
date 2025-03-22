@@ -1,8 +1,8 @@
 'use strict';
 
+import { ROLES } from '../constants';
 import logger from '../logger';
 import models from '../models';
-import { isObjectEmpty } from '../utilities/objects';
 import RoleRepository from './RoleRepository';
 
 const getIsEmailInUse = async email => {
@@ -41,19 +41,31 @@ exports.getUsers = async query => {
   try {
     const { User } = models;
     const {
+      userId,
       page = 1,
       limit = 10,
       sort = 'createdAt',
-      order = 'desc',
-      ...filters
+      order = 'desc'
     } = query;
 
-    // Build filter query
+    const [error, user] = await UserRepository.getUserById(userId);
+
+    if (error || !user) {
+      return [new Error(error.message)];
+    }
+
     const search = {};
-    if (!isObjectEmpty(filters)) {
-      Object.keys(filters).forEach(key => {
-        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-      });
+
+    const { role } = user;
+
+    if (role === ROLES.ADMIN) {
+      search = {}; // System Admin can see all tasks
+    } else if (role !== ROLES.DIRECTOR) {
+      const descendantUsers = await UserRepository.getHierarchyOfUsers(user);
+      const userIds = [userId, ...descendantUsers.map(u => u.userId)];
+      search = { managedProviders: { $in: userIds } };
+    } else {
+      search = { assignedTo: userId }; // Child sees only their own tasks
     }
 
     const options = {
@@ -121,15 +133,15 @@ exports.createUser = async body => {
     const { User } = models;
     const { email, role } = body;
 
+    const existingUser = await getIsEmailInUse(email);
+    if (existingUser) {
+      return [new Error('User with email already exists.')];
+    }
+
     const isValidRole = RoleRepository.getIsValidRole(role);
 
     if (!isValidRole) {
       return [new Error('Role provided does not exist.')];
-    }
-
-    const existingUser = await getIsEmailInUse(email);
-    if (existingUser) {
-      return [new Error('User with email already exists.')];
     }
 
     const user = new User(body);

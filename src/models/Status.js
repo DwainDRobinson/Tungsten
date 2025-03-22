@@ -16,6 +16,10 @@ const statusSchema = new Schema(
       required: true,
       index: true
     },
+    value: {
+      type: String,
+      required: true
+    },
     description: {
       type: String,
       required: true

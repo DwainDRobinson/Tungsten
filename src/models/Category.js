@@ -1,20 +1,29 @@
 'use strict';
 
 import mongoose from 'mongoose';
-import mongooseSequence from 'mongoose-sequence';
 import { isProductionEnvironment } from '../utilities/boolean';
+import { generateUid } from '../utilities/token';
 
 const { Schema, model } = mongoose;
-const autoIncrement = mongooseSequence(mongoose);
 
 //CATEGORY SCHEMA
 //  ============================================
 const categorySchema = new Schema(
   {
+    categoryId: {
+      type: String,
+      index: true,
+      unique: true,
+      default: () => generateUid()
+    },
     name: {
       type: String,
       required: true,
       index: true
+    },
+    value: {
+      type: String,
+      required: true
     },
     description: {
       type: String,
@@ -28,11 +37,6 @@ const categorySchema = new Schema(
  * Set the autoCreate option on models if not on production
  */
 categorySchema.set('autoCreate', !isProductionEnvironment());
-
-/**
- * Increments categoryId everytime an instances is created
- */
-categorySchema.plugin(autoIncrement, { inc_field: 'categoryId' });
 
 /**
  * Create Category model out of categorySchema

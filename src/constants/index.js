@@ -16,4 +16,4 @@ export { default as MFA } from './mfa';
 export { default as PERMISSIONS } from './permissions';
 export { default as ROLES } from './roles';
 export { default as STATES } from './states';
-export { default as STATUS } from './statuses';
+export { default as STATUSES } from './statuses';

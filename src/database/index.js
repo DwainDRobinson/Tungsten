@@ -57,16 +57,20 @@ const getDatabaseConnectionString = () => {
 
 const closeDatabaseConnections = () => {
   //Close active connections to db
+  logger.info('Disconnecting from database...');
   return source.disconnect();
 };
 
-const gracefulExit = () => {
-  //Gracefully shuts down application by disconnecting from all active connections to db and then process.exit(0)
-  logger.info('Shutting down application.');
-  closeDatabaseConnections().then(() => {
-    process.exit(0);
-  });
+const dropAllCollections = () => {
+  //Drop all collections
+  logger.info('Dropping all collections...');
+  return source.connection.db.dropDatabase();
 };
 
-export { closeDatabaseConnections, getDatabaseConnectionString, gracefulExit };
+export {
+  closeDatabaseConnections,
+  dropAllCollections,
+  getDatabaseConnectionString
+};
+
 export default source;

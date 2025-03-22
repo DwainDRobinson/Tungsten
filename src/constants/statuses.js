@@ -1,9 +1,10 @@
 'use strict';
 
-const STATUS = {
-  ACTIVE: 'ACTIVE',
+const STATUSES = {
+  CREATED: 'CREATED',
   INPROGRESS: 'INPROGRESS',
+  CANCELLED: 'CANCELLED',
   COMPLETED: 'COMPLETED'
 };
 
-export default STATUS;
+export default STATUSES;

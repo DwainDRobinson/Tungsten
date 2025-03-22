@@ -10,12 +10,12 @@ const difficultyQueryValidation = [
     .isString()
     .not()
     .isEmpty()
-    .withMessage('Must provide a page for categories.'),
+    .withMessage('Must provide a page for difficulties.'),
   query('limit')
     .isString()
     .not()
     .isEmpty()
-    .withMessage('Must provide a limit for categories.'),
+    .withMessage('Must provide a limit for difficulties.'),
   query('name')
     .isString()
     .withMessage('Must provide a existing difficulty name.')

@@ -5,38 +5,23 @@ import {
   CreateBucketCommand,
   DeleteObjectCommand,
   HeadBucketCommand,
-  HeadObjectCommand,
-  S3Client
+  HeadObjectCommand
 } from '@aws-sdk/client-s3';
 import config from '../config';
 import { MEDIA } from '../constants';
 import logger from '../logger';
 
+import { s3Client } from '../clients';
+
 const { aws } = config.sources;
-const { region, signatureVersion, s3, cloudFront } = aws;
-const {
-  s3AccessKeyId,
-  s3SecretAccessKey,
-  s3VideoBucketName,
-  s3ThumbnailBucketName,
-  s3CoverImageBucketName
-} = s3;
+const { s3, cloudFront } = aws;
+const { s3VideoBucketName, s3ThumbnailBucketName, s3CoverImageBucketName } = s3;
 
 const {
   videoDistributionURI,
   thumbnailDistributionURI,
   coverImageDistributionURI
 } = cloudFront;
-
-// Create S3 service object
-const s3Client = new S3Client({
-  region,
-  signatureVersion,
-  credentials: {
-    accessKeyId: s3AccessKeyId,
-    secretAccessKey: s3SecretAccessKey
-  }
-});
 
 /**
  * Video helper functions

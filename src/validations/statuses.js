@@ -10,12 +10,12 @@ const statusQueryValidation = [
     .isString()
     .not()
     .isEmpty()
-    .withMessage('Must provide a page for categories.'),
+    .withMessage('Must provide a page for statuses.'),
   query('limit')
     .isString()
     .not()
     .isEmpty()
-    .withMessage('Must provide a limit for categories.'),
+    .withMessage('Must provide a limit for statuses.'),
   query('name')
     .isString()
     .withMessage('Must provide a existing status name.')
@@ -24,6 +24,7 @@ const statusQueryValidation = [
 
 const statusPostValidation = [
   body('name').isString().withMessage('Must provide a status name.'),
+  body('value').isString().withMessage('Must provide a status value.'),
   body('description')
     .isString()
     .withMessage('Must provide a status description.')
@@ -38,6 +39,10 @@ const statusUpdateValidation = [
     .isString()
     .withMessage('Must provide a existing status id.'),
   body('name').isString().optional().withMessage('Must provide a status name.'),
+  body('value')
+    .isString()
+    .optional()
+    .withMessage('Must provide a status value.'),
   body('description')
     .isString()
     .optional()

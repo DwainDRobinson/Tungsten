@@ -12,11 +12,7 @@ import {
   internalServerErrorRequest,
   unauthorizedRequest
 } from '../response-codes';
-import {
-  generateAuthorizationToken,
-  generateOTPCode,
-  verifyJWTToken
-} from '../utilities/token';
+import { generateAuthorizationToken, verifyJWTToken } from '../utilities/token';
 
 exports.validateLogin = async (email, password, ipAddress, userAgent) => {
   try {
@@ -87,9 +83,7 @@ exports.requestPasswordReset = async email => {
       CodeRepository.deleteCode(userId);
     }
 
-    const otpCode = generateOTPCode();
-
-    await CodeRepository.createOTPCode({ userId, email, otpCode });
+    await CodeRepository.createOTPCode({ userId, email });
 
     return [
       HttpStatusCodes.OK,
