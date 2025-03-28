@@ -3,6 +3,29 @@
 import logger from '../logger';
 import models from '../models';
 
+const statuses = [
+  {
+    name: 'Created',
+    value: 'CREATED',
+    description: 'Created status description'
+  },
+  {
+    name: 'In-Progress',
+    value: 'INPROGRESS',
+    description: 'In-Progress status description'
+  },
+  {
+    name: 'Completed',
+    value: 'COMPLETED',
+    description: 'Completed status description'
+  },
+  {
+    name: 'Cancelled',
+    value: 'CANCELLED',
+    description: 'Cancelled status description'
+  }
+];
+
 const seedStatuses = async () => {
   const { Status } = models;
   try {
@@ -11,29 +34,6 @@ const seedStatuses = async () => {
     if (count > 0) {
       return;
     }
-
-    const statuses = [
-      {
-        name: 'Created',
-        value: 'CREATED',
-        description: 'Created status description'
-      },
-      {
-        name: 'In-Progress',
-        value: 'INPROGRESS',
-        description: 'In-Progress status description'
-      },
-      {
-        name: 'Completed',
-        value: 'COMPLETED',
-        description: 'Completed status description'
-      },
-      {
-        name: 'Cancelled',
-        value: 'CANCELLED',
-        description: 'Cancelled status description'
-      }
-    ];
 
     statuses.forEach(status => {
       const newStatus = new Status(status);
@@ -45,4 +45,5 @@ const seedStatuses = async () => {
   }
 };
 
+export { statuses };
 export default seedStatuses;

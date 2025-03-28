@@ -3,6 +3,24 @@
 import logger from '../logger';
 import models from '../models';
 
+const difficulties = [
+  {
+    name: 'Easy',
+    value: 'EASY',
+    description: 'Easy diffculty description'
+  },
+  {
+    name: 'Medium',
+    value: 'MEDIUM',
+    description: 'Medium diffculty description'
+  },
+  {
+    name: 'Hard',
+    value: 'HARD',
+    description: 'Hard diffculty description'
+  }
+];
+
 const seedDifficulties = async () => {
   const { Difficulty } = models;
   try {
@@ -11,24 +29,6 @@ const seedDifficulties = async () => {
     if (count > 0) {
       return;
     }
-
-    const difficulties = [
-      {
-        name: 'Easy',
-        value: 'EASY',
-        description: 'Easy diffculty description'
-      },
-      {
-        name: 'Medium',
-        value: 'MEDIUM',
-        description: 'Medium diffculty description'
-      },
-      {
-        name: 'Hard',
-        value: 'HARD',
-        description: 'Hard diffculty description'
-      }
-    ];
 
     difficulties.forEach(difficulty => {
       const newDifficulty = new Difficulty(difficulty);
@@ -40,4 +40,5 @@ const seedDifficulties = async () => {
   }
 };
 
+export { difficulties };
 export default seedDifficulties;

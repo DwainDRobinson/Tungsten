@@ -2,29 +2,40 @@
 
 import logger from '../logger';
 import models from '../models';
-import { isObjectEmpty } from '../utilities/objects';
+
+const findTagByName = async name => {
+  try {
+    const { Tag } = models;
+    const tag = await Tag.findOne({ name });
+    return tag ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting tag data from db by name: ${err.message}`);
+    return false;
+  }
+};
+
+const findTag = async tagId => {
+  try {
+    const { Tag } = models;
+    const tag = await Tag.findOne({ tagId });
+    return tag ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting tag data from db by id: ${err.message}`);
+    return false;
+  }
+};
 
 exports.getTags = async query => {
   try {
     const { Tag } = models;
-    const {
-      page = 1,
-      limit = 10,
-      sort = 'createdAt',
-      order = 'desc',
-      ...filters
-    } = query;
+    const { page = 1, limit = 10, sort = 'createdAt', order = 'desc' } = query;
 
-    // Build filter query
     const search = {};
-    if (!isObjectEmpty(filters)) {
-      Object.keys(filters).forEach(key => {
-        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-      });
-    }
 
     const options = {
-      skip: (page - 1) * limit,
+      skip: (parstInt(page) - 1) * parseInt(limit),
       limit: parseInt(limit),
       sort: { [sort]: order === 'asc' ? 1 : -1 }
     };
@@ -42,6 +53,7 @@ exports.getTags = async query => {
     if (result) {
       return [null, result];
     }
+    return [new Error('No tags found with selected query params')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting tag data from db: ${err.message}`);
@@ -51,9 +63,11 @@ exports.getTags = async query => {
 
 exports.getTag = async tagId => {
   try {
-    const { Tag } = models;
-    const tag = await Tag.findOne({ tagId });
-    return tag;
+    const tag = await findTag(tagId);
+    if (tag) {
+      return [null, tag];
+    }
+    return [new Error('Unable to find tag by id.')];
   } catch (err) {
     console.error(err);
     logger.error(
@@ -65,9 +79,11 @@ exports.getTag = async tagId => {
 
 exports.getTagByName = async name => {
   try {
-    const { Tag } = models;
-    const tag = await Tag.findOne({ name });
-    return tag;
+    const tag = await findTagByName(name);
+    if (tag) {
+      return [null, tag];
+    }
+    return [new Error('Unable to find tag by id.')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting tag data from db by name: ${err.message}`);
@@ -78,7 +94,7 @@ exports.getTagByName = async name => {
 exports.createTag = async payload => {
   try {
     const { Tag } = models;
-    const tag = await Tag.findOne({ name: payload.name });
+    const tag = await findTagByName(payload.name);
     if (tag) {
       return [new Error('Tag with name already exists.')];
     }
@@ -88,7 +104,7 @@ exports.createTag = async payload => {
   } catch (err) {
     console.error(err);
     logger.error(`Error saving tag data to db: ${err.message}`);
-    return [new Error('Unable to update tag.')];
+    return [new Error('Unable to save tag to db.')];
   }
 };
 

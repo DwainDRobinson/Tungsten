@@ -2,29 +2,42 @@
 
 import logger from '../logger';
 import models from '../models';
-import { isObjectEmpty } from '../utilities/objects';
+
+const findPermissionByName = async name => {
+  try {
+    const { Permission } = models;
+    const permission = await Permission.findOne({ name });
+    return permission ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(
+      `Error getting permission data from db by name: ${err.message}`
+    );
+    return false;
+  }
+};
+
+const findPermission = async permissionId => {
+  try {
+    const { Permission } = models;
+    const permission = await Permission.findOne({ permissionId });
+    return permission ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting permission data from db by id: ${err.message}`);
+    return false;
+  }
+};
 
 exports.getPermissions = async query => {
   try {
     const { Permission } = models;
-    const {
-      page = 1,
-      limit = 10,
-      sort = 'createdAt',
-      order = 'desc',
-      ...filters
-    } = query;
+    const { page = 1, limit = 10, sort = 'createdAt', order = 'desc' } = query;
 
-    // Build filter query
     const search = {};
-    if (!isObjectEmpty(filters)) {
-      Object.keys(filters).forEach(key => {
-        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-      });
-    }
 
     const options = {
-      skip: (page - 1) * limit,
+      skip: (parstInt(page) - 1) * parseInt(limit),
       limit: parseInt(limit),
       sort: { [sort]: order === 'asc' ? 1 : -1 }
     };
@@ -44,6 +57,7 @@ exports.getPermissions = async query => {
     if (result) {
       return [null, result];
     }
+    return [new Error('No permissions found with selected query params')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting permission data from db: ${err.message}`);
@@ -53,9 +67,11 @@ exports.getPermissions = async query => {
 
 exports.getPermission = async permissionId => {
   try {
-    const { Permission } = models;
-    const permission = await Permission.findOne({ permissionId });
-    return [null, permission];
+    const permission = await findPermission(permissionId);
+    if (permission) {
+      return [null, permission];
+    }
+    return [new Error('Unable to find permission by id.')];
   } catch (err) {
     console.error(err);
     logger.error(
@@ -67,9 +83,11 @@ exports.getPermission = async permissionId => {
 
 exports.getPermissionByName = async name => {
   try {
-    const { Permission } = models;
-    const permission = await Permission.findOne({ name });
-    return [null, permission];
+    const permission = await findPermissionByName(name);
+    if (permission) {
+      return [null, permission];
+    }
+    return [new Error('Unable to find permission by name.')];
   } catch (err) {
     console.error(err);
     logger.error(
@@ -82,7 +100,7 @@ exports.getPermissionByName = async name => {
 exports.createPermission = async payload => {
   try {
     const { Permission } = models;
-    const permission = await Permission.findOne({ name: payload.name });
+    const permission = await findPermissionByName(payload.name);
     if (permission) {
       return [new Error('Permission with name already exists.')];
     }
@@ -122,7 +140,7 @@ exports.deletePermission = async permissionId => {
     if (deletedPermission.deletedCount > 0) {
       return [null, deletedPermission];
     }
-    return [new Error('Unable to find permission to delete details.')()];
+    return [new Error('Unable to find permission to delete details.')];
   } catch (err) {
     console.error(err);
     logger.error(

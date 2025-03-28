@@ -2,29 +2,40 @@
 
 import logger from '../logger';
 import models from '../models';
-import { isObjectEmpty } from '../utilities/objects';
+
+const findStatusByName = async name => {
+  try {
+    const { Status } = models;
+    const status = await Status.findOne({ name });
+    return status ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting status data from db by name: ${err.message}`);
+    return false;
+  }
+};
+
+const findStatus = async statusId => {
+  try {
+    const { Status } = models;
+    const status = await Status.findOne({ statusId });
+    return status ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting status data from db by id: ${err.message}`);
+    return false;
+  }
+};
 
 exports.getStatuses = async query => {
   try {
     const { Status } = models;
-    const {
-      page = 1,
-      limit = 10,
-      sort = 'createdAt',
-      order = 'desc',
-      ...filters
-    } = query;
+    const { page = 1, limit = 10, sort = 'createdAt', order = 'desc' } = query;
 
-    // Build filter query
     const search = {};
-    if (!isObjectEmpty(filters)) {
-      Object.keys(filters).forEach(key => {
-        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-      });
-    }
 
     const options = {
-      skip: (page - 1) * limit,
+      skip: (parstInt(page) - 1) * parseInt(limit),
       limit: parseInt(limit),
       sort: { [sort]: order === 'asc' ? 1 : -1 }
     };
@@ -41,6 +52,7 @@ exports.getStatuses = async query => {
     if (result) {
       return [null, result];
     }
+    return [new Error('No statuses found with selected query params')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting status data from db: ${err.message}`);
@@ -50,9 +62,11 @@ exports.getStatuses = async query => {
 
 exports.getStatus = async statusId => {
   try {
-    const { Status } = models;
-    const status = await Status.findOne({ statusId });
-    return status;
+    const status = await findStatus(statusId);
+    if (status) {
+      return [null, status];
+    }
+    return [new Error('Error getting status data from db by id.')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting status data from db by id: ${err.message}`);
@@ -62,9 +76,11 @@ exports.getStatus = async statusId => {
 
 exports.getStatusByName = async name => {
   try {
-    const { Status } = models;
-    const status = await Status.findOne({ name });
-    return status;
+    const status = await findStatusByName(name);
+    if (status) {
+      return [null, status];
+    }
+    return [new Error('Error getting status data from db by name.')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting status data from db by name: ${err.message}`);
@@ -75,7 +91,7 @@ exports.getStatusByName = async name => {
 exports.createStatus = async payload => {
   try {
     const { Status } = models;
-    const status = await Status.findOne({ name: payload.name });
+    const status = await findStatusByName(payload.name);
     if (status) {
       return [new Error('status with name already exists.')];
     }
@@ -112,7 +128,7 @@ exports.deleteStatus = async statusId => {
     if (deletedStatus.deletedCount > 0) {
       return [null, deletedStatus];
     }
-    return [new Error('Unable to find status to delete details.')()];
+    return [new Error('Unable to find status to delete details.')];
   } catch (err) {
     console.error(err);
     logger.error(`Error deleting status data from db: ${err.message}`);

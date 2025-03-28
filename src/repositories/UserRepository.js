@@ -1,18 +1,14 @@
 'use strict';
 
-import { ROLES } from '../constants';
 import logger from '../logger';
 import models from '../models';
 import RoleRepository from './RoleRepository';
 
-const getIsEmailInUse = async email => {
+const findUserByEmail = async email => {
   try {
     const { User } = models;
     const user = await User.findOne({ email });
-    if (user) {
-      return true;
-    }
-    return false;
+    return user ?? false;
   } catch (err) {
     console.error(err);
     logger.error(`Error getting user data from db by email: ${err.message}`);
@@ -20,21 +16,16 @@ const getIsEmailInUse = async email => {
   }
 };
 
-const getHierarchyOfUsers = async userId => {
-  const { User } = models;
-  const users = await User.find({});
-
-  const buildHierarchy = parentId => {
-    return users
-      .filter(user =>
-        user.careGivers.some(
-          careGiver => String(careGiver) === String(parentId)
-        )
-      )
-      .flatMap(user => [user, ...buildHierarchy(user.userId)]);
-  };
-
-  return buildHierarchy(userId);
+const findUser = async userId => {
+  try {
+    const { User } = models;
+    const user = await User.findOne({ userId });
+    return user ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting user data from db by id: ${err.message}`);
+    return false;
+  }
 };
 
 exports.getUsers = async query => {
@@ -48,28 +39,16 @@ exports.getUsers = async query => {
       order = 'desc'
     } = query;
 
-    const [error, user] = await UserRepository.getUserById(userId);
-
-    if (error || !user) {
-      return [new Error(error.message)];
+    const user = await findUser(userId);
+    if (!user) {
+      return [new Error('Unable to find user by id.')];
     }
 
+    //TODO: Fix for pulling information for role based access.
     const search = {};
 
-    const { role } = user;
-
-    if (role === ROLES.ADMIN) {
-      search = {}; // System Admin can see all tasks
-    } else if (role !== ROLES.DIRECTOR) {
-      const descendantUsers = await UserRepository.getHierarchyOfUsers(user);
-      const userIds = [userId, ...descendantUsers.map(u => u.userId)];
-      search = { managedProviders: { $in: userIds } };
-    } else {
-      search = { assignedTo: userId }; // Child sees only their own tasks
-    }
-
     const options = {
-      skip: (page - 1) * limit,
+      skip: (parstInt(page) - 1) * parseInt(limit),
       limit: parseInt(limit),
       sort: { [sort]: order === 'asc' ? 1 : -1 }
     };
@@ -98,8 +77,7 @@ exports.getUsers = async query => {
 
 exports.getUser = async userId => {
   try {
-    const { User } = models;
-    const user = await User.findOne({ userId });
+    const user = await findUser(userId);
     if (user) {
       return [null, user];
     }
@@ -115,8 +93,7 @@ exports.getUser = async userId => {
 
 exports.getUserByEmail = async email => {
   try {
-    const { User } = models;
-    const user = await User.findOne({ email });
+    const user = await findUserByEmail(email);
     if (user) {
       return [null, user];
     }
@@ -133,7 +110,7 @@ exports.createUser = async body => {
     const { User } = models;
     const { email, role } = body;
 
-    const existingUser = await getIsEmailInUse(email);
+    const existingUser = await findUserByEmail(email);
     if (existingUser) {
       return [new Error('User with email already exists.')];
     }
@@ -163,7 +140,7 @@ exports.updateUser = async (userId, payload) => {
       const { email, role } = payload;
       //Looks to see if new email does not existing in the database or conflicts with the existing email.
       if (email && email !== user.email) {
-        const existingUser = await getIsEmailInUse(email);
+        const existingUser = await findUserByEmail(email);
         if (existingUser) {
           return [new Error('Unable to change email. Email already in use.')];
         }
@@ -213,5 +190,3 @@ exports.deleteUser = async userId => {
     return [new Error('Unable to delete user data.')];
   }
 };
-
-export { getHierarchyOfUsers, getIsEmailInUse };

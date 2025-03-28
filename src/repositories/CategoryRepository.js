@@ -2,28 +2,40 @@
 
 import logger from '../logger';
 import models from '../models';
-import { isObjectEmpty } from '../utilities/objects';
+
+const findCategoryByName = async name => {
+  try {
+    const { Category } = models;
+    const category = await Category.findOne({ name });
+    return category ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting category data from db by name: ${err.message}`);
+    return false;
+  }
+};
+
+const findCategory = async categoryId => {
+  try {
+    const { Category } = models;
+    const category = await Category.findOne({ categoryId });
+    return category ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error retrieving category by ID from db: ${err.message}`); // Improved error message
+    return false;
+  }
+};
 
 exports.getCategories = async query => {
   try {
     const { Category } = models;
-    const {
-      page = 1,
-      limit = 10,
-      sort = 'createdAt',
-      order = 'desc',
-      ...filters
-    } = query;
+    const { page = 1, limit = 10, sort = 'createdAt', order = 'desc' } = query;
 
-    // Build filter query
     const search = {};
-    if (!isObjectEmpty(filters)) {
-      Object.keys(filters).forEach(key => {
-        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-      });
-    }
+
     const options = {
-      skip: (page - 1) * limit,
+      skip: (parseInt(page) - 1) * parseInt(limit),
       limit: parseInt(limit),
       sort: { [sort]: order === 'asc' ? 1 : -1 }
     };
@@ -40,6 +52,7 @@ exports.getCategories = async query => {
     if (result) {
       return [null, result];
     }
+    return [new Error('No categories found with selected query params')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting category data from db: ${err.message}`);
@@ -49,21 +62,25 @@ exports.getCategories = async query => {
 
 exports.getCategory = async categoryId => {
   try {
-    const { Category } = models;
-    const category = await Category.findOne({ categoryId });
-    return category;
+    const category = await findCategory(categoryId);
+    if (category) {
+      return [null, category];
+    }
+    return [new Error('Category not found by the provided ID.')]; // Improved error message
   } catch (err) {
     console.error(err);
-    logger.error(`Error getting category data from db by id: ${err.message}`);
-    return [new Error('Error getting category data from db by id.')];
+    logger.error(`Error retrieving category by ID from db: ${err.message}`); // Improved error message
+    return [new Error('Error retrieving category by ID from db.')];
   }
 };
 
 exports.getCategoryByName = async name => {
   try {
-    const { Category } = models;
-    const category = await Category.findOne({ name });
-    return category;
+    const category = await findCategoryByName(name);
+    if (category) {
+      return [null, category];
+    }
+    return [new Error('Error getting category data from db by name.')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting category data from db by name: ${err.message}`);
@@ -74,14 +91,13 @@ exports.getCategoryByName = async name => {
 exports.createCategory = async payload => {
   try {
     const { Category } = models;
-    const category = await Category.findOne({ name: payload.name });
-    if (category) {
+    const existingCategory = await findCategoryByName(payload.name);
+    if (existingCategory) {
       return [new Error('category with name already exists.')];
     }
-    const cat = new Category(payload);
-    const createdCategory = await cat.save();
-    const { description, name, categoryId } = createdCategory;
-    return [null, { description, name, categoryId }];
+    const category = new Category(payload);
+    const createdCategory = await category.save();
+    return [null, createdCategory];
   } catch (err) {
     console.error(err);
     logger.error(`Error saving category data to db: ${err.message}`);
@@ -107,14 +123,14 @@ exports.updateCategory = async (categoryId, payload) => {
 exports.deleteCategory = async categoryId => {
   try {
     const { Category } = models;
-    const deletedCategory = await Category.deleteOne({ categoryId });
+    const deletedCategory = await Category.deleteOne({ _id: categoryId }); // Changed to use _id
     if (deletedCategory.deletedCount > 0) {
       return [null, deletedCategory];
     }
-    return [new Error('Unable to find category to delete details.')];
+    return [new Error('Category not found for deletion.')]; // Improved error message
   } catch (err) {
     console.error(err);
-    logger.error(`Unable to find category to delete details.: ${err.message}`);
-    return [new Error('Unable to find category to delete details.')];
+    logger.error(`Error deleting category by ID from db: ${err.message}`); // Improved error message
+    return [new Error('Error deleting category by ID from db.')];
   }
 };

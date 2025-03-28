@@ -23,7 +23,9 @@ exports.updateLastLogin = async body => {
     const { Login } = models;
     const payload = {
       ...body,
-      mfaAttemptTime: body.mfaRequired ? new Date() : null
+      ...(body.mfaRequired && {
+        mfaAttemptTime: new Date()
+      })
     };
     const login = new Login(payload);
     const createdLogin = await login.save();

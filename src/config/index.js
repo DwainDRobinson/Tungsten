@@ -17,7 +17,8 @@ const config = {
   auth: {
     HASH_SALT: +process.env.HASH_SALT,
     JWT_SECRET: process.env.JWT_SECRET,
-    TOKEN_EXPIRY: +process.env.TOKEN_EXPIRY
+    TOKEN_EXPIRY: +process.env.TOKEN_EXPIRY,
+    USER_PASS: process.env.USER_PASS
   },
   sources: {
     aws: {

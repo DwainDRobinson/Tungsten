@@ -2,29 +2,42 @@
 
 import logger from '../logger';
 import models from '../models';
-import { isObjectEmpty } from '../utilities/objects';
+
+const findDifficultyByName = async name => {
+  try {
+    const { Difficulty } = models;
+    const difficulty = await Difficulty.findOne({ name });
+    return difficulty ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(
+      `Error getting difficulty data from db by name: ${err.message}`
+    );
+    return false;
+  }
+};
+
+const findDifficulty = async difficultyId => {
+  try {
+    const { Difficulty } = models;
+    const difficulty = await Difficulty.findOne({ difficultyId });
+    return difficulty ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting difficulty data from db by id: ${err.message}`);
+    return false;
+  }
+};
 
 exports.getDifficulties = async query => {
   try {
     const { Difficulty } = models;
-    const {
-      page = 1,
-      limit = 10,
-      sort = 'createdAt',
-      order = 'desc',
-      ...filters
-    } = query;
+    const { page = 1, limit = 10, sort = 'createdAt', order = 'desc' } = query;
 
-    // Build filter query
     const search = {};
-    if (!isObjectEmpty(filters)) {
-      Object.keys(filters).forEach(key => {
-        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-      });
-    }
 
     const options = {
-      skip: (page - 1) * limit,
+      skip: (parstInt(page) - 1) * parseInt(limit),
       limit: parseInt(limit),
       sort: { [sort]: order === 'asc' ? 1 : -1 }
     };
@@ -43,6 +56,7 @@ exports.getDifficulties = async query => {
     if (result) {
       return [null, result];
     }
+    return [new Error('No difficulties found with selected query params')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting difficulty data from db.: ${err.message}`);
@@ -52,9 +66,11 @@ exports.getDifficulties = async query => {
 
 exports.getDifficulty = async difficultyId => {
   try {
-    const { Difficulty } = models;
-    const difficulty = await Difficulty.findOne({ difficultyId });
-    return difficulty;
+    const difficulty = await findDifficulty(difficultyId);
+    if (difficulty) {
+      return [null, difficulty];
+    }
+    return [new Error('Error getting difficulty data from db by id.')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting difficulty data from db by id: ${err.message}`);
@@ -64,9 +80,11 @@ exports.getDifficulty = async difficultyId => {
 
 exports.getDifficultyByName = async name => {
   try {
-    const { Difficulty } = models;
-    const difficulty = await Difficulty.findOne({ name });
-    return difficulty;
+    const difficulty = await findDifficultyByName(name);
+    if (difficulty) {
+      return [null, difficulty];
+    }
+    return [new Error('Error getting difficulty data from db by name.')];
   } catch (err) {
     console.error(err);
     logger.error(
@@ -79,14 +97,13 @@ exports.getDifficultyByName = async name => {
 exports.createDifficulty = async payload => {
   try {
     const { Difficulty } = models;
-    const existingDifficulty = await Difficulty.findOne({ name: payload.name });
+    const existingDifficulty = await findDifficultyByName(payload.name);
     if (existingDifficulty) {
       return [new Error('difficulty with name already exists.')];
     }
-    const diff = new Difficulty(payload);
-    const createdDifficulty = await diff.save();
-    const { description, name, difficultyId } = createdDifficulty;
-    return [null, { description, name, difficultyId }];
+    const difficulty = new Difficulty(payload);
+    const createdDifficulty = await difficulty.save();
+    return [null, createdDifficulty];
   } catch (err) {
     console.error(err);
     logger.error(`Error saving difficulty data to db: ${err.message}`);
@@ -120,7 +137,7 @@ exports.deleteDifficulty = async difficultyId => {
     if (deletedDifficulty.deletedCount > 0) {
       return [null, deletedDifficulty];
     }
-    return [new Error('Unable to find difficulty to delete details.')()];
+    return [new Error('Unable to find difficulty to delete details.')];
   } catch (err) {
     console.error(err);
     logger.error(`Error deleting difficulty by id: ${err.message}`);

@@ -2,29 +2,40 @@
 
 import logger from '../logger';
 import models from '../models';
-import { isObjectEmpty } from '../utilities/objects';
+
+const findRoleByName = async name => {
+  try {
+    const { Role } = models;
+    const role = await Role.findOne({ name });
+    return role ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting role data from db by name: ${err.message}`);
+    return false;
+  }
+};
+
+const findRole = async roleId => {
+  try {
+    const { Role } = models;
+    const role = await Role.findOne({ roleId });
+    return role ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting role data from db by id: ${err.message}`);
+    return false;
+  }
+};
 
 exports.getRoles = async query => {
   try {
     const { Role } = models;
-    const {
-      page = 1,
-      limit = 10,
-      sort = 'createdAt',
-      order = 'desc',
-      ...filters
-    } = query;
+    const { page = 1, limit = 10, sort = 'createdAt', order = 'desc' } = query;
 
-    // Build filter query
     const search = {};
-    if (!isObjectEmpty(filters)) {
-      Object.keys(filters).forEach(key => {
-        search[key] = new RegExp(filters[key], 'i'); // Regex for partial match (case-insensitive)
-      });
-    }
 
     const options = {
-      skip: (page - 1) * limit,
+      skip: (parstInt(page) - 1) * parseInt(limit),
       limit: parseInt(limit),
       sort: { [sort]: order === 'asc' ? 1 : -1 }
     };
@@ -42,6 +53,7 @@ exports.getRoles = async query => {
     if (result) {
       return [null, result];
     }
+    return [new Error('No roles found with selected query params')];
   } catch (err) {
     console.error(err);
     logger.error(`Error getting role data from db: ${err.message}`);
@@ -51,9 +63,11 @@ exports.getRoles = async query => {
 
 exports.getRole = async roleId => {
   try {
-    const { Role } = models;
-    const role = await Role.findOne({ roleId });
-    return role;
+    const role = await findRole(roleId);
+    if (role) {
+      return [null, role];
+    }
+    return [new Error('Unable to get role data from db by id.')];
   } catch (err) {
     console.error(err);
     logger.error(
@@ -65,9 +79,11 @@ exports.getRole = async roleId => {
 
 exports.getRoleByName = async name => {
   try {
-    const { Role } = models;
-    const role = await Role.findOne({ name });
-    return role;
+    const role = await findRoleByName(name);
+    if (role) {
+      return [null, role];
+    }
+    return [new Error('Unable to get role data from db by name.')];
   } catch (err) {
     console.error(err);
     logger.error(
@@ -98,7 +114,7 @@ exports.getIsValidRole = async role => {
 exports.createRole = async payload => {
   try {
     const { Role } = models;
-    const role = await Role.findOne({ name: payload.name });
+    const role = await findRoleByName(payload.name);
     if (role) {
       return [new Error('Role with name already exists.')];
     }

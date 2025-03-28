@@ -3,25 +3,59 @@
 import logger from '../logger';
 import models from '../models';
 
-exports.getCode = async userId => {
+const doesCodeByUserIdExist = async userId => {
   try {
     const { Code } = models;
     const code = await Code.findOne({ userId });
+    return code ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting code data from db by email: ${err.message}`);
+    return false;
+  }
+};
+
+const findCodeByUserId = async userId => {
+  try {
+    const { Code } = models;
+    const code = await Code.findOne({ userId });
+    return code ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting code data from db by email: ${err.message}`);
+    return false;
+  }
+};
+
+const findCodeByEmail = async email => {
+  try {
+    const { Code } = models;
+    const code = await Code.findOne({ email });
+    return code ?? false;
+  } catch (err) {
+    console.error(err);
+    logger.error(`Error getting code data from db by email: ${err.message}`);
+    return false;
+  }
+};
+
+exports.getCode = async userId => {
+  try {
+    const code = await findCodeByUserId(userId);
     if (code) {
       return [null, code];
     }
     return [new Error('Unable to find code associated with user.')];
   } catch (err) {
     console.error(err);
-    logger.error(`Error getting otpCode for user data to db: ${err.message}`);
-    return [new Error('Unable to find code associated with user.')];
+    logger.error(`Error getting otpCode for code data in db: ${err.message}`);
+    return [new Error('Unable to find code associated with code.')];
   }
 };
 
 exports.verifyOTPCode = async (email, otpCode) => {
   try {
-    const { Code } = models;
-    const code = await Code.findOne({ email });
+    const code = await findCodeByEmail(email);
     if (code.otpCode === otpCode) {
       return [null, true];
     }
@@ -37,7 +71,7 @@ exports.createOTPCode = async payload => {
   try {
     const { Code } = models;
     const { userId } = payload;
-    const existingCode = await Code.findOne({ userId });
+    const existingCode = await doesCodeByUserIdExist(userId);
     if (!existingCode) {
       const newCode = new Code(payload);
       const createdCode = await newCode.save();
