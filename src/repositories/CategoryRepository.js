@@ -22,8 +22,7 @@ const findCategory = async categoryId => {
     return category ?? false;
   } catch (err) {
     console.error(err);
-    logger.error(`Error retrieving category by ID from db: ${err.message}`); // Improved error message
-    return false;
+    logger.error(`Error retrieving category by ID from db: ${err.message}`);
   }
 };
 
@@ -66,10 +65,10 @@ exports.getCategory = async categoryId => {
     if (category) {
       return [null, category];
     }
-    return [new Error('Category not found by the provided ID.')]; // Improved error message
+    return [new Error('Category not found by the provided ID.')];
   } catch (err) {
     console.error(err);
-    logger.error(`Error retrieving category by ID from db: ${err.message}`); // Improved error message
+    logger.error(`Error retrieving category by ID from db: ${err.message}`);
     return [new Error('Error retrieving category by ID from db.')];
   }
 };
@@ -123,14 +122,14 @@ exports.updateCategory = async (categoryId, payload) => {
 exports.deleteCategory = async categoryId => {
   try {
     const { Category } = models;
-    const deletedCategory = await Category.deleteOne({ _id: categoryId }); // Changed to use _id
+    const deletedCategory = await Category.deleteOne({ categoryId });
     if (deletedCategory.deletedCount > 0) {
       return [null, deletedCategory];
     }
-    return [new Error('Category not found for deletion.')]; // Improved error message
+    return [new Error('Category not found for deletion.')];
   } catch (err) {
     console.error(err);
-    logger.error(`Error deleting category by ID from db: ${err.message}`); // Improved error message
+    logger.error(`Error deleting category by ID from db: ${err.message}`);
     return [new Error('Error deleting category by ID from db.')];
   }
 };
