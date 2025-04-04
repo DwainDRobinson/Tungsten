@@ -48,7 +48,7 @@ exports.getUsers = async query => {
     const search = {};
 
     const options = {
-      skip: (parstInt(page) - 1) * parseInt(limit),
+      skip: (parseInt(page) - 1) * parseInt(limit),
       limit: parseInt(limit),
       sort: { [sort]: order === 'asc' ? 1 : -1 }
     };

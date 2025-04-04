@@ -1,7 +1,7 @@
 'use strict';
 
 import { S3Client } from '@aws-sdk/client-s3';
-import config from '../config';
+import config from '../../config';
 
 const { aws } = config.sources;
 const { region, signatureVersion, s3 } = aws;

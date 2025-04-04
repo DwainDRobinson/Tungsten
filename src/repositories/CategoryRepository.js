@@ -23,6 +23,7 @@ const findCategory = async categoryId => {
   } catch (err) {
     console.error(err);
     logger.error(`Error retrieving category by ID from db: ${err.message}`);
+    return false;
   }
 };
 
