@@ -17,106 +17,48 @@ const HttpStatusCodes = Object.freeze({
   GATEWAY_TIMEOUT: 504
 });
 
-const getStatusMessage = statusCode => {
-  switch (statusCode) {
-    case HttpStatusCodes.OK:
-      return 'Success';
-    case HttpStatusCodes.CREATED:
-      return 'Created';
-    case HttpStatusCodes.ACCEPTED:
-      return 'Accepted';
-    case HttpStatusCodes.NO_CONTENT:
-      return 'No Content';
-    case HttpStatusCodes.BAD_REQUEST:
-      return 'Bad Request';
-    case HttpStatusCodes.FORBIDDEN:
-      return 'Forbidden';
-    case HttpStatusCodes.UNAUTHORIZED:
-      return 'Unauthorized';
-    case HttpStatusCodes.NOT_FOUND:
-      return 'Not Found';
-    case HttpStatusCodes.METHOD_NOT_ALLOWED:
-      return 'Method Not Allowed';
-    case HttpStatusCodes.BAD_GATEWAY:
-      return 'Bad Gateway';
-    case HttpStatusCodes.SERVICE_UNAVAILABLE:
-      return 'Service Unavailable';
-    case HttpStatusCodes.INTERNAL_SERVER_ERROR:
-      return 'Internal Server Error';
-    default:
-      return 'Unknown status code';
+const statusMessages = {
+  [HttpStatusCodes.OK]: 'Success',
+  [HttpStatusCodes.CREATED]: 'Created',
+  [HttpStatusCodes.ACCEPTED]: 'Accepted',
+  [HttpStatusCodes.NO_CONTENT]: 'No Content',
+  [HttpStatusCodes.BAD_REQUEST]: 'Bad Request',
+  [HttpStatusCodes.UNAUTHORIZED]: 'Unauthorized',
+  [HttpStatusCodes.FORBIDDEN]: 'Forbidden',
+  [HttpStatusCodes.NOT_FOUND]: 'Not Found',
+  [HttpStatusCodes.METHOD_NOT_ALLOWED]: 'Method Not Allowed',
+  [HttpStatusCodes.INTERNAL_SERVER_ERROR]: 'Internal Server Error',
+  [HttpStatusCodes.NOT_IMPLEMENTED]: 'Not Implemented',
+  [HttpStatusCodes.BAD_GATEWAY]: 'Bad Gateway',
+  [HttpStatusCodes.SERVICE_UNAVAILABLE]: 'Service Unavailable',
+  [HttpStatusCodes.GATEWAY_TIMEOUT]: 'Gateway Timeout'
+};
+
+const getStatusMessage = statusCode =>
+  statusMessages[statusCode] || 'Unknown status code';
+
+const errorResponse = (statusCode, message) => [
+  statusCode,
+  {
+    errors: [
+      {
+        value: getStatusMessage(statusCode),
+        msg: message
+      }
+    ]
   }
-};
+];
 
-const badRequest = message => {
-  return [
-    HttpStatusCodes.BAD_REQUEST,
-    {
-      errors: [
-        {
-          value: getStatusMessage(HttpStatusCodes.BAD_REQUEST),
-          msg: message
-        }
-      ]
-    }
-  ];
-};
-
-const unauthorizedRequest = message => {
-  return [
-    HttpStatusCodes.UNAUTHORIZED,
-    {
-      errors: [
-        {
-          value: getStatusMessage(HttpStatusCodes.UNAUTHORIZED),
-          msg: message
-        }
-      ]
-    }
-  ];
-};
-
-const forbiddenRequest = message => {
-  return [
-    HttpStatusCodes.FORBIDDEN,
-    {
-      errors: [
-        {
-          value: getStatusMessage(HttpStatusCodes.FORBIDDEN),
-          msg: message
-        }
-      ]
-    }
-  ];
-};
-
-const notFoundRequest = message => {
-  return [
-    HttpStatusCodes.NOT_FOUND,
-    {
-      errors: [
-        {
-          value: getStatusMessage(HttpStatusCodes.NOT_FOUND),
-          msg: message
-        }
-      ]
-    }
-  ];
-};
-
-const internalServerErrorRequest = message => {
-  return [
-    HttpStatusCodes.INTERNAL_SERVER_ERROR,
-    {
-      errors: [
-        {
-          value: getStatusMessage(HttpStatusCodes.INTERNAL_SERVER_ERROR),
-          msg: message
-        }
-      ]
-    }
-  ];
-};
+const badRequest = message =>
+  errorResponse(HttpStatusCodes.BAD_REQUEST, message);
+const unauthorizedRequest = message =>
+  errorResponse(HttpStatusCodes.UNAUTHORIZED, message);
+const forbiddenRequest = message =>
+  errorResponse(HttpStatusCodes.FORBIDDEN, message);
+const notFoundRequest = message =>
+  errorResponse(HttpStatusCodes.NOT_FOUND, message);
+const internalServerErrorRequest = message =>
+  errorResponse(HttpStatusCodes.INTERNAL_SERVER_ERROR, message);
 
 export {
   HttpStatusCodes,

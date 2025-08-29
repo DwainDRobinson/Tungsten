@@ -15,19 +15,12 @@ const CUSTOM_ALPHABET =
 
 const generateAuthorizationToken = user => {
   const { email, fullName, role, userId } = user;
-
   const expiresIn = dayjs().add(TOKEN_EXPIRY, 'minute').unix();
-  const payload = {
-    email,
-    fullName,
-    role,
-    userId
-  };
-
+  const payload = { email, fullName, role, userId };
   try {
     return sign({ ...payload, exp: expiresIn }, JWT_SECRET);
-  } catch {
-    console.error(err);
+  } catch (err) {
+    console.error('Error generating authorization token:', err);
     return undefined;
   }
 };
@@ -45,7 +38,9 @@ const verifyJWTToken = token => {
   }
 };
 
-const generateOTPCode = () => customAlphabet(CUSTOM_ALPHABET, 6)();
+const nanoid6 = customAlphabet(CUSTOM_ALPHABET, 6);
+
+const generateOTPCode = () => nanoid6();
 
 const generateUid = () => uuidv4();
 

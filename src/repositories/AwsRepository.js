@@ -175,95 +175,89 @@ exports.getIsThumbnailObjectAvailable = async key => {
   }
 };
 
-exports.copyVideoObject = (oldKey, newKey) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const params = {
-        ...getS3VideoParams(newKey),
-        CopySource: `${s3VideoBucketName}/${getVideoObjectKey(oldKey)}`
-      };
-      const command = new CopyObjectCommand(params);
-      await s3Client.send(command);
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'copyVideoObject',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
+exports.copyVideoObject = async (oldKey, newKey) => {
+  if (!oldKey || !newKey)
+    throw new Error('Both oldKey and newKey are required');
+  try {
+    const params = {
+      ...getS3VideoParams(newKey),
+      CopySource: `${s3VideoBucketName}/${getVideoObjectKey(oldKey)}`
+    };
+    const command = new CopyObjectCommand(params);
+    await s3Client.send(command);
+  } catch (error) {
+    logger.error(error);
+    const { requestId, cfId, extendedRequestId } = error.$metadata || {};
+    logger.error({
+      message: 'copyVideoObject',
+      requestId,
+      cfId,
+      extendedRequestId
+    });
+    throw error;
+  }
 };
 
-exports.copyThumbnailObject = (oldKey, newKey) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const params = {
-        ...getS3ThumbnailParams(newKey),
-        CopySource: `${s3ThumbnailBucketName}/${getThumbnailObjectKey(oldKey)}`
-      };
-      const command = new CopyObjectCommand(params);
-      await s3Client.send(command);
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'copyThumbnailObject',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
+exports.copyThumbnailObject = async (oldKey, newKey) => {
+  if (!oldKey || !newKey)
+    throw new Error('Both oldKey and newKey are required');
+  try {
+    const params = {
+      ...getS3ThumbnailParams(newKey),
+      CopySource: `${s3ThumbnailBucketName}/${getThumbnailObjectKey(oldKey)}`
+    };
+    const command = new CopyObjectCommand(params);
+    await s3Client.send(command);
+  } catch (error) {
+    logger.error(error);
+    const { requestId, cfId, extendedRequestId } = error.$metadata || {};
+    logger.error({
+      message: 'copyThumbnailObject',
+      requestId,
+      cfId,
+      extendedRequestId
+    });
+    throw error;
+  }
 };
 
-exports.deleteVideoByKey = key => {
-  return new Promise((resolve, reject) => {
-    try {
-      const params = getS3VideoParams(key);
-      const command = new DeleteObjectCommand(params);
-      s3Client.send(command);
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'deleteVideoByKey',
-        requestId,
-        cfId,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
+exports.deleteVideoByKey = async key => {
+  if (!key) throw new Error('Key is required');
+  try {
+    const params = getS3VideoParams(key);
+    const command = new DeleteObjectCommand(params);
+    await s3Client.send(command);
+  } catch (error) {
+    logger.error(error);
+    const { requestId, cfId, extendedRequestId } = error.$metadata || {};
+    logger.error({
+      message: 'deleteVideoByKey',
+      requestId,
+      cfId,
+      extendedRequestId
+    });
+    throw error;
+  }
 };
 
-exports.deleteThumbnailByKey = key => {
-  return new Promise((resolve, reject) => {
-    try {
-      const params = getS3ThumbnailParams(key);
-      const command = new DeleteObjectCommand(params);
-      s3Client.send(command);
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'deleteThumbnailByKey',
-        requestId,
-        cfId,
-        key,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
+exports.deleteThumbnailByKey = async key => {
+  if (!key) throw new Error('Key is required');
+  try {
+    const params = getS3ThumbnailParams(key);
+    const command = new DeleteObjectCommand(params);
+    await s3Client.send(command);
+  } catch (error) {
+    logger.error(error);
+    const { requestId, cfId, extendedRequestId } = error.$metadata || {};
+    logger.error({
+      message: 'deleteThumbnailByKey',
+      requestId,
+      cfId,
+      key,
+      extendedRequestId
+    });
+    throw error;
+  }
 };
 
 /**
@@ -344,51 +338,46 @@ exports.createCoverImageBucket = async () => {
   }
 };
 
-exports.copyCoverImageObject = (oldKey, newKey) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const params = {
-        ...getS3CoverImageParams(newKey),
-        CopySource: `${s3CoverImageBucketName}/${getCoverImageObjectKey(
-          oldKey
-        )}`
-      };
-      const command = new CopyObjectCommand(params);
-      await s3Client.send(command);
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'copyCoverImageObject',
-        requestId,
-        cfId,
-        oldKey,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
+exports.copyCoverImageObject = async (oldKey, newKey) => {
+  if (!oldKey || !newKey)
+    throw new Error('Both oldKey and newKey are required');
+  try {
+    const params = {
+      ...getS3CoverImageParams(newKey),
+      CopySource: `${s3CoverImageBucketName}/${getCoverImageObjectKey(oldKey)}`
+    };
+    const command = new CopyObjectCommand(params);
+    await s3Client.send(command);
+  } catch (error) {
+    logger.error(error);
+    const { requestId, cfId, extendedRequestId } = error.$metadata || {};
+    logger.error({
+      message: 'copyCoverImageObject',
+      requestId,
+      cfId,
+      oldKey,
+      extendedRequestId
+    });
+    throw error;
+  }
 };
 
-exports.deleteCoverImageByKey = key => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const params = getS3CoverImageParams(key);
-      const command = new DeleteObjectCommand(params);
-      await s3Client.send(command);
-      resolve();
-    } catch (err) {
-      logger.error(err);
-      const { requestId, cfId, extendedRequestId } = err.$metadata;
-      logger.error({
-        message: 'deleteCoverImageByKey',
-        requestId,
-        cfId,
-        key,
-        extendedRequestId
-      });
-      reject(err);
-    }
-  });
+exports.deleteCoverImageByKey = async key => {
+  if (!key) throw new Error('Key is required');
+  try {
+    const params = getS3CoverImageParams(key);
+    const command = new DeleteObjectCommand(params);
+    await s3Client.send(command);
+  } catch (error) {
+    logger.error(error);
+    const { requestId, cfId, extendedRequestId } = error.$metadata || {};
+    logger.error({
+      message: 'deleteCoverImageByKey',
+      requestId,
+      cfId,
+      key,
+      extendedRequestId
+    });
+    throw error;
+  }
 };

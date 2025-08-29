@@ -35,10 +35,7 @@ const seedStatuses = async () => {
       return;
     }
 
-    statuses.forEach(status => {
-      const newStatus = new Status(status);
-      newStatus.save();
-    });
+    await Status.insertMany(statuses);
   } catch (err) {
     logger.error(`Error seeding status data into db: ${err.message}`);
     throw err;

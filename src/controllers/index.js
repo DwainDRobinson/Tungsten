@@ -1,5 +1,6 @@
 'use strict';
 
+import ActivityController from './ActivityController';
 import AuthController from './AuthController';
 import CategoryController from './CategoryController';
 import DifficultyController from './DifficultyController';
@@ -8,10 +9,10 @@ import PermissionController from './PermissionController';
 import RoleController from './RoleController';
 import StatusController from './StatusController';
 import TagController from './TagController';
-import TaskController from './TaskContoller';
 import UserController from './UserContoller';
 
 export {
+  ActivityController,
   AuthController,
   CategoryController,
   DifficultyController,
@@ -20,6 +21,5 @@ export {
   RoleController,
   StatusController,
   TagController,
-  TaskController,
   UserController
 };

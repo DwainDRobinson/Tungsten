@@ -1,3 +1,4 @@
+import ActivityRepository from './ActivityRepository';
 import AwsRepository from './AwsRepository';
 import CategoryRespository from './CategoryRepository';
 import CodeRepository from './CodeRepository';
@@ -6,10 +7,10 @@ import PermissionRepository from './PermissionRepository';
 import RoleRepository from './RoleRepository';
 import StatusRespository from './StatusRespository';
 import TagRepository from './TagRepository';
-import TaskRepository from './TaskRepository';
 import UserRepository from './UserRepository';
 
 export {
+  ActivityRepository,
   AwsRepository,
   CategoryRespository,
   CodeRepository,
@@ -18,6 +19,5 @@ export {
   RoleRepository,
   StatusRespository,
   TagRepository,
-  TaskRepository,
   UserRepository
 };

@@ -21,12 +21,11 @@ const users = [
       PERMISSIONS.PROFILE_VIEW,
       PERMISSIONS.PROFILE_UPDATE,
       PERMISSIONS.PROFILE_DELETE,
-      PERMISSIONS.TASK_CREATE,
-      PERMISSIONS.TASK_VIEW,
-      PERMISSIONS.TASK_UPDATE,
-      PERMISSIONS.TASK_DELETE
+      PERMISSIONS.ACTIVITY_CREATE,
+      PERMISSIONS.ACTIVITY_VIEW,
+      PERMISSIONS.ACTIVITY_UPDATE,
+      PERMISSIONS.ACTIVITY_DELETE
     ],
-    points: 0,
     dob: '1980-05-15',
     gender: 'M',
     city: 'Chicago',
@@ -44,10 +43,10 @@ const users = [
       PERMISSIONS.PROFILE_CREATE,
       PERMISSIONS.PROFILE_VIEW,
       PERMISSIONS.PROFILE_UPDATE,
-      PERMISSIONS.TASK_CREATE,
-      PERMISSIONS.TASK_VIEW,
-      PERMISSIONS.TASK_UPDATE,
-      PERMISSIONS.TASK_DELETE
+      PERMISSIONS.ACTIVITY_CREATE,
+      PERMISSIONS.ACTIVITY_VIEW,
+      PERMISSIONS.ACTIVITY_UPDATE,
+      PERMISSIONS.ACTIVITY_DELETE
     ],
     points: 0,
     dob: '1985-07-10',
@@ -67,10 +66,10 @@ const users = [
       PERMISSIONS.PROFILE_CREATE,
       PERMISSIONS.PROFILE_VIEW,
       PERMISSIONS.PROFILE_UPDATE,
-      PERMISSIONS.TASK_CREATE,
-      PERMISSIONS.TASK_VIEW,
-      PERMISSIONS.TASK_UPDATE,
-      PERMISSIONS.TASK_DELETE
+      PERMISSIONS.ACTIVITY_CREATE,
+      PERMISSIONS.ACTIVITY_VIEW,
+      PERMISSIONS.ACTIVITY_UPDATE,
+      PERMISSIONS.ACTIVITY_DELETE
     ],
     points: 0,
     dob: '1978-09-20',
@@ -86,12 +85,11 @@ const users = [
     lastName: 'Provider',
     role: ROLES.PROVIDER,
     permissions: [
-      PERMISSIONS.TASK_CREATE,
-      PERMISSIONS.TASK_VIEW,
-      PERMISSIONS.TASK_UPDATE,
-      PERMISSIONS.TASK_DELETE
+      PERMISSIONS.ACTIVITY_CREATE,
+      PERMISSIONS.ACTIVITY_VIEW,
+      PERMISSIONS.ACTIVITY_UPDATE,
+      PERMISSIONS.ACTIVITY_DELETE
     ],
-    points: 0,
     dob: '1990-03-12',
     gender: 'M',
     city: 'Houston',
@@ -111,7 +109,6 @@ const users = [
       PERMISSIONS.PROFILE_UPDATE,
       PERMISSIONS.PROFILE_DELETE
     ],
-    points: 0,
     dob: '1975-12-05',
     gender: 'F',
     city: 'Miami',
@@ -127,7 +124,7 @@ const users = [
     permissions: [
       PERMISSIONS.PROFILE_VIEW,
       PERMISSIONS.PROFILE_UPDATE,
-      PERMISSIONS.TASK_VIEW
+      PERMISSIONS.ACTIVITY_VIEW
     ],
     careGivers: [],
     points: 0,
@@ -142,10 +139,13 @@ const users = [
 const seedUsers = async () => {
   const { User } = models;
   try {
-    users.forEach(user => {
-      const newUser = new User(user);
-      newUser.save();
-    });
+    const count = await User.countDocuments();
+
+    if (count > 0) {
+      return;
+    }
+
+    await User.insertMany(users);
   } catch (err) {
     logger.error(`Error seeding data into db: ${err.message}`);
     throw err;

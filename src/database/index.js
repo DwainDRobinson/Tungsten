@@ -55,22 +55,83 @@ const getDatabaseConnectionString = () => {
   return `mongodb+srv://${dbUser}:${dbPass}@${CLUSTER_DOMAIN}/${DB_NAME}?retryWrites=true&w=majority&appName=${dbAppName}`;
 };
 
-const closeDatabaseConnections = () => {
-  //Close active connections to db
+// Gracefully close active connections to db
+const closeDatabaseConnections = async () => {
   logger.info('Disconnecting from database...');
-  return source.disconnect();
+  try {
+    await source.disconnect();
+    logger.info('Database disconnected.');
+  } catch (err) {
+    logger.error('Error disconnecting from database:', err);
+    throw err;
+  }
 };
 
-const dropAllCollections = () => {
-  //Drop all collections
+// Retry connection logic
+const connectWithRetry = async (
+  uri,
+  options = {},
+  retries = 5,
+  delay = 2000
+) => {
+  let lastError;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      logger.info(
+        `Attempting MongoDB connection (Attempt ${attempt}/${retries})...`
+      );
+      await source.connect(uri, options);
+      logger.info('MongoDB connection established.');
+      return;
+    } catch (err) {
+      lastError = err;
+      logger.error(
+        `MongoDB connection attempt ${attempt} failed: ${err.message}`
+      );
+      if (attempt < retries) {
+        logger.info(`Retrying in ${delay}ms...`);
+        await new Promise(res => setTimeout(res, delay));
+      }
+    }
+  }
+  logger.error('All MongoDB connection attempts failed.');
+  throw lastError;
+};
+
+// Utility to wait for connection to be established
+const waitForConnection = async (timeout = 10000) => {
+  const start = Date.now();
+  while (source.connection.readyState !== 1) {
+    if (Date.now() - start > timeout) {
+      throw new Error('Timed out waiting for MongoDB connection');
+    }
+    await new Promise(res => setTimeout(res, 100));
+  }
+};
+
+// Drop all collections in the current database
+const dropAllCollections = async () => {
   logger.info('Dropping all collections...');
-  return source.connection.db.dropDatabase();
+  try {
+    await source.connection.db.dropDatabase();
+    logger.info('All collections dropped.');
+  } catch (err) {
+    logger.error('Error dropping collections:', err);
+    throw err;
+  }
 };
 
+// Utility to check if mongoose is connected
+const isDatabaseConnected = () => source.connection.readyState === 1;
+
+// Export helpers
 export {
   closeDatabaseConnections,
+  connectWithRetry,
   dropAllCollections,
-  getDatabaseConnectionString
+  getDatabaseConnectionString,
+  isDatabaseConnected,
+  waitForConnection
 };
 
 export default source;

@@ -4,42 +4,33 @@ import winston from 'winston';
 
 const { splat, combine, timestamp, printf, colorize } = winston.format;
 
-// meta param is ensured by splat()
-const myFormat = printf(({ timestamp, level, message, meta }) => {
+const myFormat = printf(({ timestamp, level, message, ...rest }) => {
+  const meta = rest.meta || rest[Symbol.for('splat')] || '';
   return `${timestamp} ${level}: ${message} ${
     meta ? JSON.stringify(meta) : ''
   }`;
 });
 
-const loggerTransports = [
-  {
-    type: 'console',
-    options: {
-      timestamp: true,
-      colorize: true
-    }
-  }
+const transports = [
+  new winston.transports.Console({
+    format: combine(colorize())
+  })
 ];
 
-const createConsoleTransport = options => {
-  return new winston.transports.Console(options);
-};
+if (process.env.NODE_ENV !== 'development') {
+  transports.push(
+    new winston.transports.File({
+      filename: 'app.log',
+      level: 'info',
+      format: combine(timestamp(), splat(), myFormat)
+    })
+  );
+}
 
-const getLoggerTransports = transports => {
-  return transports.map(transport => {
-    const { type, options } = transport;
-    switch (type) {
-      case 'console':
-        return createConsoleTransport(options);
-    }
-  });
-};
+const logger = winston.createLogger({
+  level: 'info',
+  format: combine(timestamp(), splat(), myFormat),
+  transports
+});
 
-const createLoggerFactory = transports => {
-  return winston.createLogger({
-    format: combine(timestamp(), colorize(), splat(), myFormat),
-    transports: getLoggerTransports(transports)
-  });
-};
-
-export default createLoggerFactory(loggerTransports);
+export default logger;

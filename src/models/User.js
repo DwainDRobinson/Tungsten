@@ -35,8 +35,7 @@ const userSchema = new Schema(
       default: generateUid()
     },
     points: {
-      type: Number,
-      default: 0
+      type: Number
     },
     dob: { type: String },
     gender: {

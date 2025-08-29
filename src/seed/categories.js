@@ -51,10 +51,7 @@ const seedCategories = async () => {
       return;
     }
 
-    categories.forEach(user => {
-      const newCategories = new Category(user);
-      newCategories.save();
-    });
+    await Category.insertMany(categories);
   } catch (err) {
     logger.error(`Error seeding catageory data into db: ${err.message}`);
     throw err;

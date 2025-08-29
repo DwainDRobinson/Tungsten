@@ -1,5 +1,6 @@
 'use strict';
 
+import activityRouter from './activityRouter';
 import authRouter from './authRouter';
 import categoryRouter from './categoryRouter';
 import difficultyRouter from './difficultyRouter';
@@ -10,10 +11,10 @@ import permissionRouter from './permissionRouter';
 import roleRouter from './roleRouter';
 import statusRouter from './statusRouter';
 import tagRouter from './tagRouter';
-import taskRouter from './taskRouter';
 import userRouter from './userRouter';
 
 export {
+  activityRouter,
   authRouter,
   categoryRouter,
   difficultyRouter,
@@ -24,6 +25,5 @@ export {
   roleRouter,
   statusRouter,
   tagRouter,
-  taskRouter,
   userRouter
 };

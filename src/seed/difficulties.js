@@ -30,10 +30,7 @@ const seedDifficulties = async () => {
       return;
     }
 
-    difficulties.forEach(difficulty => {
-      const newDifficulty = new Difficulty(difficulty);
-      newDifficulty.save();
-    });
+    await Difficulty.insertMany(difficulties);
   } catch (err) {
     logger.error(`Error seeding difficulty data into db: ${err.message}`);
     throw err;

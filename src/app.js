@@ -11,10 +11,10 @@ import server from './server';
 import { getCurrentUTCTimestampFormatted } from './utilities/time';
 
 const gracefulExit = () => {
-  //Gracefully shuts down application by disconnecting from all active connections to db and then process.exit(0)
+  // Gracefully shuts down application by disconnecting from all active connections to db and then setting process.exitCode
   logger.info('Shutting down application.');
   closeDatabaseConnections().then(() => {
-    process.exit(0);
+    process.exitCode = 0;
   });
 };
 
@@ -24,7 +24,10 @@ const gracefulExit = () => {
 const initializeDBConnection = async () => {
   const { options } = config.sources.database;
   try {
+    logger.info('Connecting to database...');
+    const start = Date.now();
     await source.connect(getDatabaseConnectionString(), options);
+    logger.info(`Database connected in ${Date.now() - start}ms.`);
   } catch (e) {
     logger.error(`Error connecting to db: ${e}`);
     throw e;
@@ -36,8 +39,10 @@ const initializeDBConnection = async () => {
  */
 const initializeSeedData = async () => {
   try {
+    logger.info('Seeding database...');
+    const start = Date.now();
     await seedData();
-    logger.info(`Database seeded successfully.`);
+    logger.info(`Database seeded successfully in ${Date.now() - start}ms.`);
   } catch (e) {
     logger.error(`Error seeding data into db: ${e}`);
     throw e;
@@ -47,13 +52,19 @@ const initializeSeedData = async () => {
 /**
  * Starts web server
  */
-const startServer = () => {
+const startServer = async () => {
   const { PORT, HOST } = config;
   try {
-    server.listen(PORT, HOST);
-    logger.info(`Server listening on port: ${PORT}`);
+    logger.info('Starting server...');
+    await new Promise((resolve, reject) => {
+      server.listen(PORT, HOST, err => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+    logger.info(`Server listening at http://${HOST}:${PORT}`);
   } catch (err) {
-    logger.error(`Server started with error: ${err}`);
+    logger.error(`Server failed to start: ${err}`);
     throw err;
   }
 };
@@ -61,12 +72,14 @@ const startServer = () => {
 /**
  * Start web application
  */
+
+// Main entry point
 const runApplication = async () => {
   const { APP_NAME } = config;
   logger.info(`Starting ${APP_NAME} app...`);
   await initializeDBConnection();
   await initializeSeedData();
-  startServer();
+  await startServer();
 };
 
 runApplication().catch(err => {

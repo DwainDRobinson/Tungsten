@@ -20,13 +20,15 @@ const seedData = async () => {
 
     await dropAllCollections();
 
-    await seedCategories();
-    await seedDifficulties();
-    await seedStatuses();
-    await seedPermissions();
-    await seedTags();
-    await seedRoles();
-    await seedUsers();
+    await Promise.all([
+      seedCategories(),
+      seedDifficulties(),
+      seedStatuses(),
+      seedPermissions(),
+      seedTags(),
+      seedRoles(),
+      seedUsers()
+    ]);
   } catch (err) {
     logger.error(`Error seeding data into db: ${err.message}`);
     throw err;

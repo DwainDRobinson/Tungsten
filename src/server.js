@@ -12,6 +12,7 @@ import config from './config';
 import logger from './logger';
 import { rateLimitHandler } from './middlewares';
 import {
+  activityRouter,
   authRouter,
   categoryRouter,
   difficultyRouter,
@@ -22,7 +23,6 @@ import {
   roleRouter,
   statusRouter,
   tagRouter,
-  taskRouter,
   userRouter
 } from './routers';
 import { isProductionEnvironment } from './utilities/boolean';
@@ -44,7 +44,6 @@ logger.info('Loaded response time middleware.');
 //Cors middleware
 server.use(
   cors({
-    origin: config.FRONT_END_APP_ORIGIN_URL, // Replace with the origin of your frontend app
     credentials: true // Allow cookies and authentication headers
   })
 );
@@ -78,36 +77,24 @@ if (isProductionEnvironment()) {
   logger.info('Loaded rate limit middleware.');
 }
 
-server.use(BASE_URL, mainRouter);
-logger.info('Loaded main routes middleware.');
-
-server.use(BASE_URL, roleRouter);
-logger.info('Loaded role routes middleware.');
-
-server.use(BASE_URL, permissionRouter);
-logger.info('Loaded permission routes middleware.');
-
-server.use(BASE_URL, authRouter);
-server.use(BASE_URL, loginRouter);
-logger.info('Loaded auth routes middleware.');
-
-server.use(BASE_URL, userRouter);
-logger.info('Loaded user routes middleware.');
-
-server.use(BASE_URL, tagRouter);
-logger.info('Loaded tag routes middleware.');
-
-server.use(BASE_URL, categoryRouter);
-logger.info('Loaded catgory routes middleware.');
-
-server.use(BASE_URL, difficultyRouter);
-logger.info('Loaded difficulty routes middleware.');
-
-server.use(BASE_URL, statusRouter);
-logger.info('Loaded status routes middleware.');
-
-server.use(BASE_URL, taskRouter);
-logger.info('Loaded task routes middleware.');
+// Register all routers with logging
+const routeLogMap = [
+  [mainRouter, 'main'],
+  [roleRouter, 'role'],
+  [permissionRouter, 'permission'],
+  [authRouter, 'auth'],
+  [loginRouter, 'login'],
+  [userRouter, 'user'],
+  [tagRouter, 'tag'],
+  [categoryRouter, 'category'],
+  [difficultyRouter, 'difficulty'],
+  [statusRouter, 'status'],
+  [activityRouter, 'activity']
+];
+for (const [router, name] of routeLogMap) {
+  server.use(BASE_URL, router);
+  logger.info(`Loaded ${name} routes middleware.`);
+}
 
 server.use(notFoundRouter);
 logger.info('Loaded not found routes middleware.');

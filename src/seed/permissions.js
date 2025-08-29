@@ -35,24 +35,24 @@ const permissions = [
     description: 'Profile Delete permission'
   },
   {
-    name: 'Task Create',
-    value: 'TASK_CREATE',
-    description: 'Task Create permission'
+    name: 'Activity Create',
+    value: 'ACTIVITY_CREATE',
+    description: 'Activity Create permission'
   },
   {
-    name: 'Task View',
-    value: 'TASK_VIEW',
-    description: 'Task View permission'
+    name: 'Activity View',
+    value: 'ACTIVITY_VIEW',
+    description: 'Activity View permission'
   },
   {
-    name: 'Task Update',
-    value: 'TASK_UPDATE',
-    description: 'Task Update permission'
+    name: 'Activity Update',
+    value: 'ACTIVITY_UPDATE',
+    description: 'Activity Update permission'
   },
   {
-    name: 'Task Delete',
-    value: 'TASK_DELETE',
-    description: 'Task Delete permission'
+    name: 'Activity Delete',
+    value: 'ACTIVITY_DELETE',
+    description: 'Activity Delete permission'
   }
 ];
 
@@ -65,10 +65,7 @@ const seedPermissions = async () => {
       return;
     }
 
-    permissions.forEach(permission => {
-      const newPermission = new Permission(permission);
-      newPermission.save();
-    });
+    await Permission.insertMany(permissions);
   } catch (err) {
     logger.error(`Error seeding permission data into db: ${err.message}`);
     throw err;

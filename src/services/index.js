@@ -1,5 +1,6 @@
 'use strict';
 
+import ActivityService from './ActivityService';
 import AuthService from './AuthService';
 import CategoryService from './CategoryService';
 import EntitlementService from './EntitlementService';
@@ -11,6 +12,7 @@ import TagService from './TagService';
 import UserService from './UserService';
 
 export {
+  ActivityService,
   AuthService,
   CategoryService,
   EntitlementService,

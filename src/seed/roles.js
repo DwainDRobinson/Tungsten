@@ -16,10 +16,10 @@ const roles = [
       PERMISSIONS.PROFILE_VIEW,
       PERMISSIONS.PROFILE_UPDATE,
       PERMISSIONS.PROFILE_DELETE,
-      PERMISSIONS.TASK_CREATE,
-      PERMISSIONS.TASK_VIEW,
-      PERMISSIONS.TASK_UPDATE,
-      PERMISSIONS.TASK_DELETE
+      PERMISSIONS.ACTIVITY_CREATE,
+      PERMISSIONS.ACTIVITY_VIEW,
+      PERMISSIONS.ACTIVITY_UPDATE,
+      PERMISSIONS.ACTIVITY_DELETE
     ]
   },
   {
@@ -31,10 +31,10 @@ const roles = [
       PERMISSIONS.PROFILE_CREATE,
       PERMISSIONS.PROFILE_VIEW,
       PERMISSIONS.PROFILE_UPDATE,
-      PERMISSIONS.TASK_CREATE,
-      PERMISSIONS.TASK_VIEW,
-      PERMISSIONS.TASK_UPDATE,
-      PERMISSIONS.TASK_DELETE
+      PERMISSIONS.ACTIVITY_CREATE,
+      PERMISSIONS.ACTIVITY_VIEW,
+      PERMISSIONS.ACTIVITY_UPDATE,
+      PERMISSIONS.ACTIVITY_DELETE
     ]
   },
   {
@@ -46,10 +46,10 @@ const roles = [
       PERMISSIONS.PROFILE_CREATE,
       PERMISSIONS.PROFILE_VIEW,
       PERMISSIONS.PROFILE_UPDATE,
-      PERMISSIONS.TASK_CREATE,
-      PERMISSIONS.TASK_VIEW,
-      PERMISSIONS.TASK_UPDATE,
-      PERMISSIONS.TASK_DELETE
+      PERMISSIONS.ACTIVITY_CREATE,
+      PERMISSIONS.ACTIVITY_VIEW,
+      PERMISSIONS.ACTIVITY_UPDATE,
+      PERMISSIONS.ACTIVITY_DELETE
     ]
   },
   {
@@ -57,10 +57,10 @@ const roles = [
     value: 'PROVIDER',
     description: 'Provider Role',
     permissions: [
-      PERMISSIONS.TASK_CREATE,
-      PERMISSIONS.TASK_VIEW,
-      PERMISSIONS.TASK_UPDATE,
-      PERMISSIONS.TASK_DELETE
+      PERMISSIONS.ACTIVITY_CREATE,
+      PERMISSIONS.ACTIVITY_VIEW,
+      PERMISSIONS.ACTIVITY_UPDATE,
+      PERMISSIONS.ACTIVITY_DELETE
     ]
   },
   {
@@ -82,7 +82,7 @@ const roles = [
     permissions: [
       PERMISSIONS.PROFILE_VIEW,
       PERMISSIONS.PROFILE_UPDATE,
-      PERMISSIONS.TASK_VIEW
+      PERMISSIONS.ACTIVITY_VIEW
     ]
   }
 ];
@@ -96,10 +96,7 @@ const seedRoles = async () => {
       return;
     }
 
-    roles.forEach(role => {
-      const newRole = new Role(role);
-      newRole.save();
-    });
+    await Role.insertMany(roles);
   } catch (err) {
     logger.error(`Error seeding role data into db: ${err.message}`);
     throw err;

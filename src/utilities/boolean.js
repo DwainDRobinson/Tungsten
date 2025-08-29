@@ -1,36 +1,23 @@
 'use strict';
 
 const convertArgToBoolean = arg => {
-  switch (arg) {
-    case 'true':
-    case 'yes':
-    case '1':
-    case 'on':
-      return true;
-
-    case 'false':
-    case 'no':
-    case '0':
-    case null:
-    case 'off':
-    case undefined:
-      return false;
-
-    default:
-      return !!arg;
+  if (typeof arg === 'boolean') return arg;
+  if (typeof arg === 'number') return arg !== 0;
+  if (typeof arg === 'string') {
+    const val = arg.trim().toLowerCase();
+    if (['true', 'yes', '1', 'on'].includes(val)) return true;
+    if (['false', 'no', '0', 'off', ''].includes(val)) return false;
   }
+  return !!arg;
 };
 
-const isProductionEnvironment = () => {
-  return process.env.NODE_ENV === 'production';
-};
-
-const isDevelopmentEnvironment = () => {
-  return process.env.NODE_ENV === 'development';
-};
+const isProductionEnvironment = () => process.env.NODE_ENV === 'production';
+const isDevelopmentEnvironment = () => process.env.NODE_ENV === 'development';
+const isTestEnvironment = () => process.env.NODE_ENV === 'test';
 
 export {
   convertArgToBoolean,
   isDevelopmentEnvironment,
-  isProductionEnvironment
+  isProductionEnvironment,
+  isTestEnvironment
 };

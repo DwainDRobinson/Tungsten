@@ -35,8 +35,8 @@ const requestResponseHandler = (req, res, next) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-  err && logger.error(`Error: ${err.stack}`);
-  return res.status(err.status || HttpStatusCodes.INTERNAL_SERVER_ERROR).json({
+  if (err) logger.error(`Error: ${err.stack}`);
+  res.status(err.status || HttpStatusCodes.INTERNAL_SERVER_ERROR).json({
     error: isProductionEnvironment()
       ? getStatusMessage(HttpStatusCodes.INTERNAL_SERVER_ERROR)
       : err.message
@@ -65,49 +65,39 @@ const validationHandler = (req, res, next) => {
 const validateAuthorizationTokenHandler = async (req, res, next) => {
   if (isDevelopmentEnvironment()) return next();
   const authorizationHeader = req.get('Authorization');
-
   if (!authorizationHeader) {
     const [statusCode, response] = unauthorizedRequest(
       TokenErrorMessages.MISSING_ACCESS_TOKEN
     );
     return res.status(statusCode).send(response);
   }
-
-  //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MD......
+  // Expect: Bearer <token>
   const tokenParts = authorizationHeader.split(' ');
-
-  if (tokenParts.length !== 2 || tokenParts[0].startsWith('Bearer ')) {
+  if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
     const [statusCode, response] = unauthorizedRequest(
       TokenErrorMessages.INVALID_AUTHORIZATION_FORMAT
     );
     return res.status(statusCode).send(response);
   }
-
   try {
     const token = tokenParts[1];
-
     const result = verifyJWTToken(token);
-
     if (!result) {
       const [statusCode, response] = forbiddenRequest(
         TokenErrorMessages.UNAUTHORIZED_TOKEN_PROVIDED
       );
       return res.status(statusCode).send(response);
     }
-
     const { email } = result.data;
     const [error, user] = await UserRepository.getUserByEmail(email);
-
     if (!user || error) {
       const [statusCode, response] = forbiddenRequest(
         TokenErrorMessages.INVALID_TOKEN_METADTA
       );
       return res.status(statusCode).send(response);
     }
-
-    //Setting user for req in the next function in the callstack
     req.user = result.data;
-    next();
+    return next();
   } catch (err) {
     console.error(err);
     if (err.name === 'TokenExpiredError') {
@@ -129,28 +119,27 @@ const hasPermissionHandler = requiredPermissions => async (req, res, next) => {
     const { user } = req;
     const { email } = user;
     const [error, existingUser] = await UserRepository.getUserByEmail(email);
-
     if (error || !existingUser) {
-      const [statusCode, response] = forbiddenRequest(error.message);
+      const message =
+        error && error.message
+          ? error.message
+          : 'User not found or error occurred';
+      const [statusCode, response] = forbiddenRequest(message);
       return res.status(statusCode).send(response);
     }
-
     const { permissions } = existingUser;
     const doesUserHasPermission = EntitlementService.checkPermissions(
       requiredPermissions,
       permissions
     );
-
     if (!doesUserHasPermission) {
       const [statusCode, response] = forbiddenRequest(
         EntitlementErrorMessages.USER_UNAUTHORIZED
       );
       return res.status(statusCode).send(response);
     }
-
-    //Removing user for req in the next function in the callstack
     delete req.user;
-    next();
+    return next();
   } catch (err) {
     console.error(err);
     const message = isProductionEnvironment()
@@ -161,6 +150,7 @@ const hasPermissionHandler = requiredPermissions => async (req, res, next) => {
   }
 };
 
+// Exported middlewares
 export {
   errorHandler,
   hasPermissionHandler,

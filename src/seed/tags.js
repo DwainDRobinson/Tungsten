@@ -40,10 +40,7 @@ const seedTags = async () => {
       return;
     }
 
-    tags.forEach(tag => {
-      const newTag = new Tag(tag);
-      newTag.save();
-    });
+    await Tag.insertMany(tags);
   } catch (err) {
     logger.error(`Error seeding tag data into db: ${err.message}`);
     throw err;

@@ -5,14 +5,14 @@ import { generateUid } from '../utilities/token';
 
 const { Schema, model } = mongoose;
 
-const taskSchema = new Schema(
+const activitySchema = new Schema(
   {
     title: {
       type: String,
       required: true,
       index: true
     },
-    taskId: {
+    activityId: {
       type: String,
       index: true,
       unique: true,
@@ -71,8 +71,8 @@ const taskSchema = new Schema(
 /**
  * Set the autoCreate option on models if not on production
  */
-taskSchema.set('autoCreate', !isProductionEnvironment());
+activitySchema.set('autoCreate', !isProductionEnvironment());
 
-const Task = model('Task', taskSchema);
+const Activity = model('Activity', activitySchema);
 
-export default Task;
+export default Activity;
